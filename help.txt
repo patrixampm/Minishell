@@ -1,0 +1,24 @@
+ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo "hola 'que tal'""estas"
+hola 'que tal'estas
+ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo hols
+hols
+ppeckham@c3r5s4:~/Desktop/minishell_playground$ e'c'ho hola
+hola
+ppeckham@c3r5s4:~/Desktop/minishell_playground$ e'c'h"o" hola
+hola
+ppeckham@c3r5s4:~/Desktop/minishell_playground$ 'echo' hola
+hola
+
+
+ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo $USER
+ppeckham
+ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo '$USER'
+$USER
+ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo "$USER"
+ppeckham
+ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo "$USER$USER"
+ppeckhamppeckham
+ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo "$USERa$USER"
+ppeckham
+ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo "$USER'a'$USER"
+ppeckham'a'ppeckham
