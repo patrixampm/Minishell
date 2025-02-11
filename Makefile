@@ -21,7 +21,8 @@ CYAN    = \033[37;1m
 BOLD	= \033[1m
 RED		= \033[31;1m
 
-SHARED_FILES =
+SHARED_FILES = arg_list args_struct_a env_list \
+				args_struct_b args_struct_c \
 
 SRC_FILES = main $(SHARED_FILES)
 BONUS_FILES = main_bonus

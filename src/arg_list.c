@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 11:53:35 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/01/30 12:24:02 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/11 11:38:10 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,14 @@
 
 t_arg	*ft_new_arg(t_arg *arg_node)
 {
-	t_arg	*new_node;
-
-	new_node = malloc(sizeof(t_arg));
-	if (!new_node)
+	arg_node = malloc(sizeof(t_arg));
+	if (!arg_node)
 		return (NULL);
-	new_node->str = NULL;
-	new_node->len = 0;
-	new_node->type = -1;
-	new_node->job = NULL;
-	new_node->next = NULL;
-	return (new_node);
+	arg_node->str = NULL;
+	arg_node->len = 0;
+	arg_node->type = -1;
+	arg_node->next = NULL;
+	return (arg_node);
 }
 
 t_arg	*ft_last_arg(t_arg *lst)
@@ -73,19 +70,18 @@ void	ft_free_arg_list(t_arg **lst)
 	t_arg	*aux;
 	t_arg	*next;
 
-    if (!lst)
-        return;
-
-    aux = *lst;
-    while (aux)
-    {
+	if (!lst)
+		return ;
+	aux = *lst;
+	while (aux)
+	{
 		next = aux->next;
-        free(aux->str);
-        free(aux->len);
-		free(aux->type);
-		free(aux->job);
-        free(aux);
-        aux = next;
-    }
-    *lst = NULL;
+		if (aux->str)
+			free(aux->str);
+		if (aux->temp)
+			free(aux->temp);
+		free(aux);
+		aux = next;
+	}
+	*lst = NULL;
 }

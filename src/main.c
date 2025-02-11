@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:55 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/01/30 14:37:25 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/11 11:58:38 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,9 @@ int	main(int ac, char **av, char **env)
 			str = readline("Minishell:>");
 			add_history(str);
 			if (!ft_strncmp(str, "EXIT", 5))
-			{
-				break;
-			}
-			// ft_arg_lst(str);
+				break ;
+			if (!ft_arg_lst(str))
+				return (1);
 			free(str);
 		}
 	}

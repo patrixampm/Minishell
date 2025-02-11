@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/01/30 14:51:27 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/11 13:43:19 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,25 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
+typedef struct s_strqt
+{
+	int		start;
+	int		end;
+	int		len;
+	char	*substr;
+}	t_strqt;
+
 typedef struct s_arg
 {
 	char			*str;
+	char			*temp;
+	int				start;
+	int				end;
 	int				len;
 	int				type;
 	char			job;
-	struct s_env	*next;
+	int				index;
+	struct s_arg	*next;
 }	t_arg;
 
 typedef struct s_pipex
@@ -72,7 +84,17 @@ int		ft_env_lstsize(t_env **lst);
 void	ft_free_env_list(t_env **lst);
 
 // ARG STRUCT
-t_arg	*ft_create_arg_lst(char *str);
-void	ft_arg_lst(char *str);
+int		ft_get_s_end(char *str, int s_start);
+bool	ft_check_q_end(char *str, int *i, char c, t_strqt *qt);
+bool	ft_check_quote(char *str, int start, t_strqt *qt);
+void	ft_free_aux_str(t_strqt *qt, t_strqt *s);
+void	ft_check_if_first_i(t_arg *arg_node);
+bool	ft_set_argstr(t_arg *arg_node, char *str, int *i);
+bool	ft_set_0_str(char *str, int *i, t_arg *arg_node);
+bool	ft_set_q_str(char *str, t_arg *arg_node, t_strqt *s, t_strqt *qt);
+bool	ft_set_str(t_arg *node, char *str, int *i, int len);
+int		ft_get_type(char *str, char c, int *i);
+void	ft_create_arg_lst(char *str, t_arg **arg_lst);
+bool	ft_arg_lst(char *str);
 
 #endif
