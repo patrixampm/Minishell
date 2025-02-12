@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 11:53:35 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/02/11 11:38:10 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/11 15:49:39 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ t_arg	*ft_new_arg(t_arg *arg_node)
 	if (!arg_node)
 		return (NULL);
 	arg_node->str = NULL;
+	arg_node->temp = NULL;
 	arg_node->len = 0;
 	arg_node->type = -1;
 	arg_node->next = NULL;

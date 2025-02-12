@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:55 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/02/11 11:58:38 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/11 15:51:22 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,10 @@ int	main(int ac, char **av, char **env)
 			if (!ft_strncmp(str, "EXIT", 5))
 				break ;
 			if (!ft_arg_lst(str))
+			{
+				free(str);
 				return (1);
+			}
 			free(str);
 		}
 	}

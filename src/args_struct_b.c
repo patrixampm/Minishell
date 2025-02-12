@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 16:32:31 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/02/11 13:43:27 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/12 12:05:40 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,8 +108,14 @@ bool	ft_set_0_str(char *str, int *i, t_arg *arg_node)
 
 bool	ft_set_argstr(t_arg *arg_node, char *str, int *i)
 {
-	if (arg_node->type == 1 || arg_node->type == 2
-		|| arg_node->type == 3 || arg_node->type == 5 || arg_node->type == 7)
+	if (arg_node->type < 3)
+	{
+		if (arg_node->type == 1 || arg_node->type == 2)
+			arg_node->str = "";
+		if (!ft_set_0_str(str, i, arg_node))
+			return (false);
+	}
+	else if (arg_node->type == 3 || arg_node->type == 5 || arg_node->type == 7)
 	{
 		if (!ft_set_str(arg_node, str, i, 1))
 			return (false);
@@ -121,15 +127,7 @@ bool	ft_set_argstr(t_arg *arg_node, char *str, int *i)
 			return (false);
 		*i += 2;
 	}
-	else if (arg_node->type == 0)
-	{
-		if (!ft_set_0_str(str, i, arg_node))
-			return (false);
-	}
 	else
 		return (false);
-	// printf("%s\n", arg_node->str);
-	// printf("%d\n", arg_node->len);
-	// printf("%d\n", arg_node->type);
 	return (true);
 }
