@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 16:32:31 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/02/25 10:27:24 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/25 12:23:37 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,29 +89,6 @@ void	ft_form_str(t_arg *arg_node)
 	arg_node->len = ft_strlen(arg_node->str);
 }
 
-// bool	ft_check_end(char *str, int *i)
-// {
-// 	int	qt_count;
-// 	int	j;
-
-// 	qt_count = 0;
-// 	j = *i;
-// 	while (j >= 0)
-// 	{
-// 		printf("j: %d\n", j);
-// 		if (str[j] == '\'' || str[j] == '"')
-// 			qt_count++;
-// 		j--;
-// 	}
-// 	if (qt_count % 2 != 0)
-// 	{
-// 		(*i)++;
-// 		return (false);
-// 	}
-// 	else
-// 		return (true);
-// }
-
 bool	ft_set_alt_str(char *str, int *i, t_arg *arg_node, t_env *env_lst)
 {
 	int	end;
@@ -142,7 +119,9 @@ bool	ft_set_alt_str(char *str, int *i, t_arg *arg_node, t_env *env_lst)
 			is_end = true;
 		else if (*i >= end && str[*i + 1] && str[*i + 1] != ' ')
 			end = 0;
+		printf("*i1: %d\n", *i);
 		*i = *i + 1;
+		printf("*i2: %d\n", *i);
 	}
 	return (true);
 }

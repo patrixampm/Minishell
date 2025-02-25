@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 13:48:15 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/02/25 10:43:29 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/25 12:07:57 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void	ft_check_expand(t_arg *nd, t_env *env_lst)
 	while (aux)
 	{
 		if (ft_strncmp(nd->exp_str, aux->name, ft_strlen(aux->name)) == 0
-			&& ft_strlen(nd->exp_str) != 0)
+			&& ft_strlen(nd->exp_str) != 0 && ft_strlen(aux->name) == ft_strlen(nd->exp_str))
 		{
 			nd->valid_expand = true;
 			free(nd->exp_str);

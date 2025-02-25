@@ -40,3 +40,4 @@ a"$PAT"
 a$PATH"$a"
 $PATH$
 "$USER"$USER
+"hola "" "$LANG" "

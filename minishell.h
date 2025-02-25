@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/02/25 10:35:40 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/25 12:23:15 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,8 +105,7 @@ char	*ft_join_free(char *s1, char *s2);
 void	ft_print_arg_lst(t_arg **arg_lst);
 bool	ft_check_closure(char *str, int *i, t_arg *node, int *end);
 void	ft_form_str(t_arg *arg_node);
-void	ft_final_str(int *i, int j, t_arg *arg_node);
-void	ft_final_str2(int *i, int j, t_arg *arg_node);
+void	ft_final_str(t_arg *arg_node);
 void	ft_simple_qt(char *str, int *i, t_arg *arg_node);
 void	ft_double_qt(char *str, int *i, t_arg *arg_node, t_env *env_lst);
 void	ft_no_qt(char *str, int *i, t_arg *node, t_env *env_lst);
@@ -122,7 +121,6 @@ void	ft_reset_expand_s(t_arg *arg_node);
 void	ft_reset_expand_s2(t_arg *arg_node);
 void	ft_reset_str_temp(t_arg *arg_node);
 void	ft_reset_expand_b(t_arg *arg_node);
-void	ft_set_post(char *str, int j, int k, t_arg *arg_node);
 void	ft_check_expand(t_arg *nd, t_env *env_lst);
 
 #endif

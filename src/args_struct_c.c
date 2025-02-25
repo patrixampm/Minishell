@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 16:30:16 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/02/25 11:44:36 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/25 12:33:52 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,52 +33,11 @@ bool	ft_check_closure(char *str, int *i, t_arg *node, int *end)
 	return (false);
 }
 
-void	ft_final_str(int *i, int j, t_arg *arg_node)
+void	ft_final_str(t_arg *arg_node)
 {
 	char	*temp;
 
 	ft_reset_expand_s2(arg_node);
-	printf("*i: %d\n", *i);
-	printf("j: %d\n", j);
-	printf("pre: %s\n", arg_node->pre);
-	printf("ext: %s\n", arg_node->exp_str);
-	printf("post: %s\n", arg_node->post);
-	if (!arg_node->pre && !arg_node->exp_str && !arg_node->post)
-		arg_node->temp = NULL;
-	if (arg_node->pre && arg_node->exp_str && arg_node->post)
-	{
-		temp = ft_join_free(arg_node->pre, arg_node->exp_str);
-		arg_node->temp = ft_join_free(temp, arg_node->post);
-	}
-	else if (arg_node->pre && arg_node->exp_str && !arg_node->post)
-		arg_node->temp = ft_join_free(arg_node->pre, arg_node->exp_str);
-	else if (arg_node->pre && !arg_node->exp_str && arg_node->post)
-		arg_node->temp = ft_join_free(arg_node->pre, arg_node->post);
-	else if (!arg_node->pre && arg_node->exp_str && arg_node->post)
-		arg_node->temp = ft_join_free(arg_node->exp_str, arg_node->post);
-	else
-	{
-		if (!arg_node->pre && arg_node->exp_str && !arg_node->post)
-			arg_node->temp = ft_strdup(arg_node->exp_str);
-		else if (!arg_node->pre && !arg_node->exp_str && arg_node->post)
-			arg_node->temp = ft_strdup(arg_node->post);
-		else if (arg_node->pre && !arg_node->exp_str && !arg_node->post)
-			arg_node->temp = ft_strdup(arg_node->pre);
-		ft_reset_expand_s(arg_node);
-	}
-	*i = j;
-}
-
-void	ft_final_str2(int *i, int j, t_arg *arg_node)
-{
-	char	*temp;
-
-	ft_reset_expand_s2(arg_node);
-	printf("*i: %d\n", *i);
-	printf("j: %d\n", j);
-	printf("pre: %s\n", arg_node->pre);
-	printf("ext: %s\n", arg_node->exp_str);
-	printf("post: %s\n", arg_node->post);
 	if (!arg_node->pre && !arg_node->exp_str && !arg_node->post)
 		arg_node->temp = NULL;
 	if (arg_node->pre && arg_node->exp_str && arg_node->post)
@@ -142,28 +101,22 @@ void	ft_double_qt(char *str, int *i, t_arg *arg_node, t_env *env_lst)
 			ft_check_expand(arg_node, env_lst);
 			if (str[k] == '$')
 			{
-				ft_final_str2(i, j, arg_node);
+				ft_final_str(arg_node);
 				*i = k - 1;
 				return ;
 			}
 			j = k;
 			if (str[j] != str[*i] && str[k] != '\0')
 				k++;
-			printf("*I: %d\n", *i);
-			printf("J: %d\n", j);
-			printf("K: %d\n", k);
-			printf("pre: %s\n", arg_node->pre);
-			printf("ext: %s\n", arg_node->exp_str);
 			if (str[k] == '$')
 			{
-				ft_final_str2(i, j, arg_node);
+				ft_final_str(arg_node);
 				*i = k - 1;
 				return ;
 			}
 			while (str[k] && str[k] != str[*i])
 				k++;
 			arg_node->post = ft_substr(str, j, k - j);
-			printf("post: %s\n", arg_node->post);
 			if (str[j] == str[*i])
 				break ;
 			
@@ -173,13 +126,10 @@ void	ft_double_qt(char *str, int *i, t_arg *arg_node, t_env *env_lst)
 	if (!arg_node->has_expand)
 		ft_simple_qt(str, i, arg_node);
 	else
-		ft_final_str(i, k, arg_node);
-}
-
-void	ft_no_qt_no_exp(char *str, t_arg *node, int *i, int j)
-{
-	node->temp = ft_substr(str, *i, (j - *i));
-	*i = j - 1;
+	{
+		ft_final_str(arg_node);
+		*i = j;
+	}
 }
 
 void	ft_no_qt(char *s, int *i, t_arg *node, t_env *env_lst)
@@ -203,7 +153,7 @@ void	ft_no_qt(char *s, int *i, t_arg *node, t_env *env_lst)
 			ft_check_expand(node, env_lst);
 			if (s[k] == '$')
 			{
-				ft_final_str2(i, j, node);
+				ft_final_str(node);
 				*i = k - 1;
 				return ;
 			}
@@ -211,7 +161,7 @@ void	ft_no_qt(char *s, int *i, t_arg *node, t_env *env_lst)
 				k++;
 			if (s[k] == '$')
 			{
-				ft_final_str2(i, j, node);
+				ft_final_str(node);
 				*i = k - 1;
 				return ;
 			}
@@ -223,7 +173,13 @@ void	ft_no_qt(char *s, int *i, t_arg *node, t_env *env_lst)
 		j++;
 	}
 	if (!node->has_expand)
-		ft_no_qt_no_exp(s, node, i, j);
+	{
+		node->temp = ft_substr(s, *i, (j - *i));
+		*i = j - 1;
+	}
 	else
-		ft_final_str(i, k, node);
+	{
+		ft_final_str(node);
+		*i = j;
+	}
 }
