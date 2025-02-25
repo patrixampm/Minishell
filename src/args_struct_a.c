@@ -6,13 +6,23 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 10:56:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/02/12 11:22:50 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/20 11:18:13 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	ft_create_arg_lst(char *str, t_arg **arg_lst)
+void	ft_free_node_n_list(t_arg **lst, t_arg *node)
+{
+	if (node)
+		free(node);
+	if (lst)
+		ft_free_arg_list(lst);
+	else
+		lst = NULL;
+}
+
+void	ft_create_arg_lst(char *str, t_arg **arg_lst, t_env *env_lst)
 {
 	t_arg	*arg_node;
 	int		i;
@@ -27,21 +37,21 @@ void	ft_create_arg_lst(char *str, t_arg **arg_lst)
 		arg_node->type = ft_get_type(str, str[i], &i);
 		if (arg_node->type == -1)
 		{
-			free(arg_node);
-			return (ft_free_arg_list(arg_lst));
+			ft_free_node_n_list(arg_lst, arg_node);
+			break ;
 		}
-		if (!ft_set_argstr(arg_node, str, &i))
+		if (!ft_set_arg_str(arg_node, str, &i, env_lst))
 		{
-			free(arg_node);
+			ft_free_arg_list(arg_lst);
 			break ;
 		}
 		ft_add_arg_back(arg_lst, arg_node);
-		if (!str[i - 1])
+		if (i >= ft_strlen(str))
 			break ;
 	}
 }
 
-void	ft_print_lst(t_arg **arg_lst)
+void	ft_print_arg_lst(t_arg **arg_lst)
 {
 	t_arg	*aux;
 	int		i;
@@ -53,27 +63,29 @@ void	ft_print_lst(t_arg **arg_lst)
 		printf("node %d str: %s\n", i, aux->str);
 		printf("node %d len: %d\n", i, aux->len);
 		printf("node %d type: %d\n", i, aux->type);
+		printf("node %d has expand: %d\n", i, aux->has_expand);
+		printf("node %d has valid expand: %d\n", i, aux->valid_expand);
+		printf("--------------------------\n");
 		i++;
 		aux = aux->next;
 	}
 	printf("node %d str: %s\n", i, aux->str);
 	printf("node %d len: %d\n", i, aux->len);
 	printf("node %d type: %d\n", i, aux->type);
+	printf("node %d has expand: %d\n", i, aux->has_expand);
+	printf("node %d has valid expand: %d\n", i, aux->valid_expand);
+	printf("--------------------------\n");
 }
 
-bool	ft_arg_lst(char *str)
+t_arg	*ft_arg_lst(char *str, t_env *env_lst)
 {
 	t_arg	*arg_lst;
 
 	arg_lst = NULL;
-	ft_create_arg_lst(str, &arg_lst);
+	ft_create_arg_lst(str, &arg_lst, env_lst);
 	if (arg_lst != NULL)
-		ft_print_lst(&arg_lst);
-	if (!arg_lst)
-	{
-		ft_free_arg_list(&arg_lst);
-		return (false);
-	}
+		ft_print_arg_lst(&arg_lst);
 	else
-		return (true);
+		return (NULL);
+	return (arg_lst);
 }

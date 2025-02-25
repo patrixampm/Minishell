@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 14:45:32 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/01/14 14:46:39 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/24 17:33:52 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@ int	ft_strlen(const char *str)
 	int	i;
 
 	i = 0;
-	while (str[i] != '\0')
+	if (str == NULL)
+		return (0);
+	while (str && str[i] != '\0')
 	{
 		i++;
 	}

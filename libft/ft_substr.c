@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 12:03:30 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/01/16 13:18:18 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/17 16:13:50 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	size_t	i;
 
 	i = 0;
+	if (len == 0)
+		return ("");
 	if (start > (size_t)ft_strlen(s))
 		len = 0;
 	if (len > (size_t)ft_strlen(s) - start)

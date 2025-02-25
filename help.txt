@@ -23,34 +23,20 @@ ppeckham
 ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo "$USER'a'$USER"
 ppeckham'a'ppeckham
 
+ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo $expand $aun"que"no'expand'
+quenoexpand
+ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo $expand aun"que"$no'expand'
+aunqueexpand
+ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo $expand aun"que"juju$no'expand'
+aunquejujuexpand
 
-CHATARRA
-while (!is_end)
-		{
-			if (str[qt->end + 1] != ' ' || str[qt->end + 1] != '\0')
-			else
-			{
-				is_end = true;
-				s->start = qt->end + 1;
-				if (ft_check_quote(str, s->start, qt))
-				{
-					is_end = false;
-					if (!ft_check_q_end(str, &qt->start, str[qt->start], qt))
-						return (false);
-					s->end = qt->start - 1;
-					s->len = qt->start - s->start;
-				}
-			}
-		}
-		quote->len = quote->end - quote->start;
-		arg_node->str = ft_substr(str, arg_node->start, quote->start);
-		temp = ft_substr(str, (quote->start + 1), (quote->len - 1));
-		arg_node->str = ft_strjoin(arg_node->str, temp);
-		if (str[quote->end + 1] != ' ' && str[quote->end + 1] != '\0')
-		{
-			arg_node->end = ft_get_w_end(str, quote->end);
-			arg_node->len = arg_node->end - quote->end;
-			temp = ft_substr(str, (quote->end + 1), arg_node->len);
-			arg_node->str = ft_strjoin(arg_node->str, temp);
-		}
-		arg_node->len = ft_strlen(arg_node->str);
+
+"abc '$USER' cba"
+Make'file'"" $US'ER'""""
+"$USER"' ' ho"la"'que'' ''as"e"'
+
+$PA$PATH
+a"$PAT"
+a$PATH"$a"
+$PATH$
+"$USER"$USER
