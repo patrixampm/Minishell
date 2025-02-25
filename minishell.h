@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/02/25 12:23:15 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/25 17:34:37 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,10 @@ typedef struct s_arg
 {
 	char			*str;
 	char			*temp;
+	char			*temp2;
 	char			*pre;
 	char			*post;
-	char			*exp_str;
+	char			*exp;
 	int				start;
 	int				end;
 	int				len;
@@ -103,9 +104,11 @@ t_env	*ft_get_env_lst(char **env);
 void	ft_free_node_n_list(t_arg **lst, t_arg *node);
 char	*ft_join_free(char *s1, char *s2);
 void	ft_print_arg_lst(t_arg **arg_lst);
-bool	ft_check_closure(char *str, int *i, t_arg *node, int *end);
+bool	ft_check_closure(char *str, int *i, t_arg *node);
+bool	ft_check_qt_closure(char *str, int k);
 void	ft_form_str(t_arg *arg_node);
-void	ft_final_str(t_arg *arg_node);
+void	ft_expand_str(t_arg *arg_node);
+bool	ft_qt(char *str, int *i, t_arg *node, t_env *env);
 void	ft_simple_qt(char *str, int *i, t_arg *arg_node);
 void	ft_double_qt(char *str, int *i, t_arg *arg_node, t_env *env_lst);
 void	ft_no_qt(char *str, int *i, t_arg *node, t_env *env_lst);

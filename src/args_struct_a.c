@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 10:56:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/02/20 11:18:13 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/25 16:56:21 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	ft_print_arg_lst(t_arg **arg_lst)
 
 	aux = *arg_lst;
 	i = 0;
-	while (aux->next)
+	while (aux)
 	{
 		printf("node %d str: %s\n", i, aux->str);
 		printf("node %d len: %d\n", i, aux->len);
@@ -69,12 +69,6 @@ void	ft_print_arg_lst(t_arg **arg_lst)
 		i++;
 		aux = aux->next;
 	}
-	printf("node %d str: %s\n", i, aux->str);
-	printf("node %d len: %d\n", i, aux->len);
-	printf("node %d type: %d\n", i, aux->type);
-	printf("node %d has expand: %d\n", i, aux->has_expand);
-	printf("node %d has valid expand: %d\n", i, aux->valid_expand);
-	printf("--------------------------\n");
 }
 
 t_arg	*ft_arg_lst(char *str, t_env *env_lst)
@@ -83,6 +77,8 @@ t_arg	*ft_arg_lst(char *str, t_env *env_lst)
 
 	arg_lst = NULL;
 	ft_create_arg_lst(str, &arg_lst, env_lst);
+	// Hay que meter algo que recorrar los nodos y elimine cualquiera que tenga
+	// str == NULL
 	if (arg_lst != NULL)
 		ft_print_arg_lst(&arg_lst);
 	else

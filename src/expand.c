@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 13:48:15 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/02/25 12:07:57 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/25 17:39:16 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ void	ft_reset_expand_b(t_arg *arg_node)
 
 void	ft_reset_expand_s(t_arg *arg_node)
 {
-	if (arg_node->exp_str)
-		free(arg_node->exp_str);
+	if (arg_node->exp)
+		free(arg_node->exp);
 	if (arg_node->pre)
 		free(arg_node->pre);
 	if (arg_node->post)
@@ -32,69 +32,37 @@ void	ft_reset_expand_s2(t_arg *arg_node)
 {
 	if (ft_strlen(arg_node->pre) == 0)
 		arg_node->pre = NULL;
-	if (ft_strlen(arg_node->exp_str) == 0)
-		arg_node->exp_str = NULL;
+	if (ft_strlen(arg_node->exp) == 0)
+		arg_node->exp = NULL;
 	if (ft_strlen(arg_node->post) == 0)
 		arg_node->post = NULL;
 }
 
-void	ft_reset_str_temp(t_arg *arg_node)
-{
-	if (ft_strlen(arg_node->str) == 0)
-		arg_node->str = NULL;
-	if (ft_strlen(arg_node->temp) == 0)
-		arg_node->temp = NULL;
-}
-
-// void	ft_set_post(char *str, int j, int k, t_arg *node)
-// {
-// 	int	qt_count;
-// 	int	i;
-
-// 	qt_count = 0;
-// 	i = j;
-// 	while (i < ft_strlen(str))
-// 	{
-// 		if (str[i] == '\'' || str[i] == '"')
-// 			qt_count++;
-// 		i++;
-// 	}
-// 	if (qt_count % 2 == 0)
-// 	{
-// 		if (str[k + 1] == '\'' || str[k + 1] == '"')
-// 			node->post = ft_substr(str, j, k - (j - 1));
-// 		else
-// 			node->post = ft_substr(str, j, (k - j));
-// 	}
-// 	else
-// 		node->post = ft_substr(str, j, k - (j - 1));
-// }
-
 void	ft_check_expand(t_arg *nd, t_env *env_lst)
 {
-	t_env	*aux;
+	t_env	*a;
 
-	aux = env_lst;
-	nd->has_expand = true;
-	while (aux)
+	a = env_lst;
+	while (a)
 	{
-		if (ft_strncmp(nd->exp_str, aux->name, ft_strlen(aux->name)) == 0
-			&& ft_strlen(nd->exp_str) != 0 && ft_strlen(aux->name) == ft_strlen(nd->exp_str))
+		if (ft_strncmp(nd->exp, a->name, ft_strlen(a->name)) == 0
+			&& ft_strlen(nd->exp) != 0
+			&& ft_strlen(a->name) == ft_strlen(nd->exp))
 		{
 			nd->valid_expand = true;
-			free(nd->exp_str);
-			nd->exp_str = ft_strdup(aux->content);
+			free(nd->exp);
+			nd->exp = ft_strdup(a->content);
 		}
-		aux = aux->next;
+		a = a->next;
 	}
 	if (!nd->valid_expand)
 	{
-		if (ft_strncmp("$", nd->exp_str, ft_strlen(nd->exp_str)) == 0)
+		if (ft_strncmp("$", nd->exp, ft_strlen(nd->exp)) == 0)
 			return ;
 		else
 		{
-			free(nd->exp_str);
-			nd->exp_str = NULL;
+			free(nd->exp);
+			nd->exp = NULL;
 		}
 	}
 }

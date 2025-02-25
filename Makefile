@@ -23,7 +23,8 @@ RED		= \033[31;1m
 
 SHARED_FILES = arg_list args_struct_a \
 				args_struct_b args_struct_c \
-				env_list env_struct expand \
+				args_struct_d \
+				env_list env_struct expand closures \
 
 SRC_FILES = main $(SHARED_FILES)
 BONUS_FILES = main_bonus
