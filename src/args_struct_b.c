@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 16:32:31 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/02/25 17:40:59 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/26 13:56:53 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ bool	ft_set_simple_str(t_arg *arg_node, char *str, int *i, int len)
 
 bool	ft_set_alt_str(char *str, int *i, t_arg *arg_node, t_env *env_lst)
 {
-	bool is_end;
+	bool	is_end;
 
 	is_end = false;
 	while (!is_end)

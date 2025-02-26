@@ -6,11 +6,36 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 17:19:09 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/02/25 17:27:05 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/26 11:41:51 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	ft_compose_temp1(t_arg *node, char *s, int *i, int j)
+{
+	if (!node->has_expand)
+		ft_simple_qt(s, i, node);
+	else
+	{
+		ft_expand_str(node);
+		*i = j;
+	}
+}
+
+void	ft_compose_temp2(t_arg *node, char *s, int *i, int j)
+{
+	if (!node->has_expand)
+	{
+		node->temp = ft_substr(s, *i, (j - *i));
+		*i = j - 1;
+	}
+	else
+	{
+		ft_expand_str(node);
+		*i = j;
+	}
+}
 
 bool	ft_check_closure(char *str, int *i, t_arg *node)
 {

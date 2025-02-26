@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 17:30:02 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/02/25 17:43:58 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/26 14:00:08 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,12 @@ void	ft_simple_qt(char *str, int *i, t_arg *node)
 	*i = j;
 }
 
+void	ft_end_here(t_arg *node, int *i, int k)
+{
+	ft_expand_str(node);
+	*i = k - 1;
+	return ;
+}
 
 void	ft_double_qt(char *s, int *i, t_arg *node, t_env *env_lst)
 {
@@ -43,47 +49,22 @@ void	ft_double_qt(char *s, int *i, t_arg *node, t_env *env_lst)
 	{
 		if (s[j] == '$')
 		{
-			node->has_expand = true;
-			k = j + 1;
-			node->pre = ft_substr(s, *i + 1, j - (*i + 1));
-			while (s[k] && s[k] != '$' && s[k] != '\'' && s[k] != '"' && s[k] != ' ')
-				k++;
-			if (s[j] == '$' && (s[j + 1] == '\'' || s[j + 1] == '"' || s[j + 1] == '\0'))
-				node->exp = ft_strdup("$");
-			else
-				node->exp = ft_substr(s, j + 1, k - (j + 1));
+			k = ft_pre_n_exp1(s, node, i, j);
 			ft_check_expand(node, env_lst);
 			if (s[k] == '$' || (s[k] == '\'' && ft_check_qt_closure(s, k)))
-			{
-				ft_expand_str(node);
-				*i = k - 1;
-				return ;
-			}
+				return (ft_end_here(node, i, k));
 			j = k;
-			if (s[j] != s[*i] && s[k] != '\0')
-				k++;
+			ft_check_n_iter(s, i, j, &k);
 			if (s[k] == '$')
-			{
-				ft_expand_str(node);
-				*i = k - 1;
-				return ;
-			}
-			while (s[k] && s[k] != s[*i])
-				k++;
+				return (ft_end_here(node, i, k));
+			ft_iter_k(s, i, &k);
 			node->post = ft_substr(s, j, k - j);
 			if (s[j] == s[*i])
 				break ;
-			
 		}
 		j++;
 	}
-	if (!node->has_expand)
-		ft_simple_qt(s, i, node);
-	else
-	{
-		ft_expand_str(node);
-		*i = j;
-	}
+	ft_compose_temp1(node, s, i, j);
 }
 
 void	ft_no_qt(char *s, int *i, t_arg *node, t_env *env_lst)
@@ -96,30 +77,14 @@ void	ft_no_qt(char *s, int *i, t_arg *node, t_env *env_lst)
 	{
 		if (s[j] == '$')
 		{
-			node->has_expand = true;
-			k = j + 1;
-			node->pre = ft_substr(s, *i, j - *i);
-			while (s[k] && s[k] != '$' && s[k] != '\'' && s[k] != '"' && s[k] != ' ')
-				k++;
-			if (s[j] == '$' && (s[j + 1] == '\'' || s[j + 1] == '"' || s[j + 1] == '\0'))
-				node->exp = ft_strdup("$");
-			else
-				node->exp = ft_substr(s, j + 1, k - (j + 1));
+			k = ft_pre_n_exp2(s, node, i, j);
 			ft_check_expand(node, env_lst);
 			if (s[k] == '$' || s[k] == ' ')
-			{
-				ft_expand_str(node);
-				*i = k - 1;
-				return ;
-			}
+				return (ft_end_here(node, i, k));
 			else if (s[k] && (s[k] == '\'' || s[k] == '"'))
 				k++;
 			if (s[k] == '$')
-			{
-				ft_expand_str(node);
-				*i = k - 1;
-				return ;
-			}
+				return (ft_end_here(node, i, k));
 			j = k;
 			while (s[k] && s[k] != '\'' && s[k] != '"' && s[k] != ' ')
 				k++;
@@ -127,14 +92,5 @@ void	ft_no_qt(char *s, int *i, t_arg *node, t_env *env_lst)
 		}
 		j++;
 	}
-	if (!node->has_expand)
-	{
-		node->temp = ft_substr(s, *i, (j - *i));
-		*i = j - 1;
-	}
-	else
-	{
-		ft_expand_str(node);
-		*i = j;
-	}
+	ft_compose_temp2(node, s, i, j);
 }

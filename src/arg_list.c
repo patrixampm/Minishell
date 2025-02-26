@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 11:53:35 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/02/25 17:44:52 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/26 13:43:05 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ t_arg	*ft_new_arg(t_arg *arg_node)
 	arg_node->has_expand = false;
 	arg_node->valid_expand = false;
 	arg_node->next = NULL;
+	arg_node->prev = NULL;
 	return (arg_node);
 }
 
@@ -55,21 +56,32 @@ void	ft_add_arg_back(t_arg **lst, t_arg *new)
 	}
 	last_node = ft_last_arg(*lst);
 	last_node->next = new;
+	new->prev = last_node;
 }
 
-int	ft_arg_lstsize(t_arg **lst)
+void	ft_lst_del_node(t_arg **lst, t_arg *node)
 {
-	int		i;
-	t_arg	*aux;
+	t_arg	*aux1;
+	t_arg	*aux2;
 
-	aux = *lst;
-	i = 0;
-	while (aux)
+	if (!node)
+		return ;
+	aux2 = node->next;
+	if (node->prev)
 	{
-		i++;
-		aux = aux->next;
+		aux1 = node->prev;
+		if (aux2)
+			aux2->prev = aux1;
+		aux1->next = aux2;
 	}
-	return (i);
+	else
+	{
+		*lst = aux2;
+		if (aux2)
+			aux2->prev = NULL;
+	}
+	free(node->str);
+	free(node);
 }
 
 void	ft_free_arg_list(t_arg **lst)
