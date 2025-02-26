@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 11:53:35 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/01/30 12:24:02 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/26 13:43:05 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,22 @@
 
 t_arg	*ft_new_arg(t_arg *arg_node)
 {
-	t_arg	*new_node;
-
-	new_node = malloc(sizeof(t_arg));
-	if (!new_node)
+	arg_node = malloc(sizeof(t_arg));
+	if (!arg_node)
 		return (NULL);
-	new_node->str = NULL;
-	new_node->len = 0;
-	new_node->type = -1;
-	new_node->job = NULL;
-	new_node->next = NULL;
-	return (new_node);
+	arg_node->str = NULL;
+	arg_node->temp = NULL;
+	arg_node->temp2 = NULL;
+	arg_node->pre = NULL;
+	arg_node->post = NULL;
+	arg_node->exp = NULL;
+	arg_node->len = 0;
+	arg_node->type = -1;
+	arg_node->has_expand = false;
+	arg_node->valid_expand = false;
+	arg_node->next = NULL;
+	arg_node->prev = NULL;
+	return (arg_node);
 }
 
 t_arg	*ft_last_arg(t_arg *lst)
@@ -51,21 +56,32 @@ void	ft_add_arg_back(t_arg **lst, t_arg *new)
 	}
 	last_node = ft_last_arg(*lst);
 	last_node->next = new;
+	new->prev = last_node;
 }
 
-int	ft_arg_lstsize(t_arg **lst)
+void	ft_lst_del_node(t_arg **lst, t_arg *node)
 {
-	int		i;
-	t_arg	*aux;
+	t_arg	*aux1;
+	t_arg	*aux2;
 
-	aux = *lst;
-	i = 0;
-	while (aux)
+	if (!node)
+		return ;
+	aux2 = node->next;
+	if (node->prev)
 	{
-		i++;
-		aux = aux->next;
+		aux1 = node->prev;
+		if (aux2)
+			aux2->prev = aux1;
+		aux1->next = aux2;
 	}
-	return (i);
+	else
+	{
+		*lst = aux2;
+		if (aux2)
+			aux2->prev = NULL;
+	}
+	free(node->str);
+	free(node);
 }
 
 void	ft_free_arg_list(t_arg **lst)
@@ -73,19 +89,16 @@ void	ft_free_arg_list(t_arg **lst)
 	t_arg	*aux;
 	t_arg	*next;
 
-    if (!lst)
-        return;
-
-    aux = *lst;
-    while (aux)
-    {
+	if (!lst)
+		return ;
+	aux = *lst;
+	while (aux)
+	{
 		next = aux->next;
-        free(aux->str);
-        free(aux->len);
-		free(aux->type);
-		free(aux->job);
-        free(aux);
-        aux = next;
-    }
-    *lst = NULL;
+		if (aux->str)
+			free(aux->str);
+		free(aux);
+		aux = next;
+	}
+	*lst = NULL;
 }

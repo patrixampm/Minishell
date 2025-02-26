@@ -22,3 +22,23 @@ ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo "$USERa$USER"
 ppeckham
 ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo "$USER'a'$USER"
 ppeckham'a'ppeckham
+
+ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo $expand $aun"que"no'expand'
+quenoexpand
+ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo $expand aun"que"$no'expand'
+aunqueexpand
+ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo $expand aun"que"juju$no'expand'
+aunquejujuexpand
+
+
+"abc '$USER' cba"
+Make'file'"" $US'ER'""""
+"$USER"' ' ho"la"'que'' ''as"e"'
+
+$PA$PATH
+a"$PAT"
+a$PATH"$a"
+$PATH$
+"$USER"$USER
+"hola "" "$LANG" "
+hi >> phillippa $USER | "how are you"

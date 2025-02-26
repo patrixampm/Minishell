@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 11:24:15 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/01/22 16:50:53 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/26 13:54:32 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,8 @@ char	*ft_substr(char const *s, unsigned int start, size_t len);
 // concatena s1 y s2 añadiendo '\0' al final. Primero asiga un espacio de 
 // memoria con malloc.
 char	*ft_strjoin(char const *s1, char const *s2);
+// concatena s1 y s2 y los libera devolviendo un string nuevo.
+char	*ft_join_free(char *s1, char *s2);
 // elimina del principio y del final del string s1 todos los caracteres conte-
 // nidos en el string set. Si no coinciden ninguno, devuelve la cadena
 // completa. Utiliza malloc para asignar la memoria exacta.

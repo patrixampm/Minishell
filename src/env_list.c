@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lists.c                                            :+:      :+:    :+:   */
+/*   env_list.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 13:01:16 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/01/30 11:45:22 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/02/05 16:41:17 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,17 +71,16 @@ void	ft_free_env_list(t_env **lst)
 	t_env	*aux;
 	t_env	*next;
 
-    if (!lst)
-        return;
-
-    aux = *lst;
-    while (aux)
-    {
+	if (!lst)
+		return ;
+	aux = *lst;
+	while (aux)
+	{
 		next = aux->next;
-        free(aux->name);
-        free(aux->content);
-        free(aux);
-        aux = next;
-    }
-    *lst = NULL;
+		free(aux->name);
+		free(aux->content);
+		free(aux);
+		aux = next;
+	}
+	*lst = NULL;
 }
