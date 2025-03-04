@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 17:30:02 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/02/26 14:00:08 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/03/04 10:53:44 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,13 +73,14 @@ void	ft_no_qt(char *s, int *i, t_arg *node, t_env *env_lst)
 	int			k;
 
 	j = *i;
-	while (j <= ft_strlen(s) && s[j] != '\'' && s[j] != '"' && s[j] != ' ')
+	while (j <= ft_strlen(s) && s[j] != '\'' && s[j] != '"' && s[j] != ' '
+		&& s[j] != '|')
 	{
 		if (s[j] == '$')
 		{
 			k = ft_pre_n_exp2(s, node, i, j);
 			ft_check_expand(node, env_lst);
-			if (s[k] == '$' || s[k] == ' ')
+			if (s[k] == '$' || s[k] == ' ' || s[k] == '\'' || s[k] == '|')
 				return (ft_end_here(node, i, k));
 			else if (s[k] && (s[k] == '\'' || s[k] == '"'))
 				k++;

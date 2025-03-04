@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 16:32:31 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/02/26 13:56:53 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/03/04 10:52:21 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ int	ft_get_type(char *str, char c, int *i)
 	int		type;
 
 	type = -1;
-	if (ft_isalpha(c) == 1 || c == '$')
+	if (ft_isalpha(c) == 1 || c == '$' || c == '-'
+		|| c == '.' || c == '/')
 		return (type = 0);
 	if (c == '\'')
 		return (type = 1);
@@ -65,11 +66,13 @@ bool	ft_set_alt_str(char *str, int *i, t_arg *arg_node, t_env *env_lst)
 		ft_form_str(arg_node);
 		if (*i >= (ft_strlen(str)))
 			return (true);
-		if (*i >= arg_node->end && (str[*i + 1] == '\0' || str[*i + 1] == ' '))
+		if (*i >= arg_node->end && (str[*i + 1] == '\0' || str[*i + 1] == ' '
+			|| str[*i + 1] == '|'))
 			is_end = true;
 		else if (*i >= arg_node->end && str[*i + 1] && str[*i + 1] != ' ')
 			arg_node->end = 0;
 		*i = *i + 1;
+		printf("i: %d\n", *i);
 	}
 	return (true);
 }

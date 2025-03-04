@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:55 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/02/24 16:19:06 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/03/04 10:49:28 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,27 @@
 
 bool	ft_minishell(char *str, char **env)
 {
-	t_env	*env_lst;
-	t_arg	*arg_lst;
+	t_ms	*ms;
 
-	env_lst = ft_get_env_lst(env);
-	if (env_lst == NULL)
+	ms = malloc(sizeof(t_ms));
+	if (ms == NULL)
 		return (false);
-	arg_lst = ft_arg_lst(str, env_lst);
-	if (arg_lst == NULL)
+	ms->env_lst = ft_get_env_lst(env);
+	if (ms->env_lst == NULL)
+		return (false);
+	ms->arg_lst = ft_arg_lst(str, ms->env_lst);
+	if (ms->arg_lst == NULL)
 	{
-		ft_free_arg_list(&arg_lst);
-		ft_free_env_list(&env_lst);
+		ft_free_arg_list(&ms->arg_lst);
+		ft_free_env_list(&ms->env_lst);
+		free(ms);
 		return (false);
 	}
-	ft_free_arg_list(&arg_lst);
-	ft_free_env_list(&env_lst);
+	ft_chunks(ms);
+	ft_print_arg_lst(&ms->arg_lst);
+	ft_free_arg_list(&ms->arg_lst);
+	ft_free_env_list(&ms->env_lst);
+	free(ms);
 	return (true);
 }
 

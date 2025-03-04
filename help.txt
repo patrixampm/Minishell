@@ -32,7 +32,7 @@ aunquejujuexpand
 
 
 "abc '$USER' cba"
-Make'file'"" $US'ER'""""
+Make'file'|"" $US'ER'""""
 "$USER"' ' ho"la"'que'' ''as"e"'
 
 $PA$PATH
@@ -42,3 +42,6 @@ $PATH$
 "$USER"$USER
 "hola "" "$LANG" "
 hi >> phillippa $USER | "how are you"
+
+THIS ONE DOES WORK:
+'abc '$USER' cba' because ' cba' is lost
