@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 12:25:42 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/02/12 13:15:12 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/03/05 15:28:51 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,12 @@ void	ft_print_env_lst(t_env **env_lst)
 	t_env	*aux;
 
 	aux = *env_lst;
-	while (aux->next)
+	while (aux)
 	{
 		printf("node name: %s\n", aux->name);
 		printf("node content: %s\n", aux->content);
 		aux = aux->next;
 	}
-	printf("node name: %s\n", aux->name);
-	printf("node content: %s\n", aux->content);
 }
 
 t_env	*ft_create_env_lst(t_env **lst, char **env)

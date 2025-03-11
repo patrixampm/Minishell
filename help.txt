@@ -42,6 +42,105 @@ $PATH$
 "$USER"$USER
 "hola "" "$LANG" "
 hi >> phillippa $USER | "how are you"
-
-THIS ONE DOES WORK:
 'abc '$USER' cba' because ' cba' is lost
+
+
+/*
+JOBS:
+
+str		   job	   type		description
+
+'<'		-> 'i' -> 	3 	| infile: must be the first node or come after a 'p'
+'<<'	-> 'h' -> 	4 	| here_doc: must be just after a 'C', and before a 'D'
+'>'		-> 'o' -> 	5 	| outfile: must come after a 'C' (or various) and before an 'O'
+'>>'	-> 'a' -> 	6 	| append: the same as 'o'
+'|'		-> 'p' -> 	7 	| pipe
+
+-------the above str's are literal, the bellow are examples-------------------
+
+'in.txt'-> 'I' -> 0/1/2 | Infile name, must come after 'i'
+'out.txt'->'O' -> 0/1/2 | Outfile name, must come after 'o'
+'cat'	-> 'C' -> 0/1/2 | Command, must be the first node or  come after an 'I', and must have 
+						  an 'o' after if it has an outfile, or nothing if it goes to terminal
+'STOP'	-> 'D' -> 0/1/2 | delimiter: must be first or after a 'p' and before a 'h'
+*/
+
+
+t_proc	*ft_create_proc(t_proc **proc_lst, t_ms *ms)
+{
+	t_arg	*aux;
+	t_proc	*process;
+	int		i;
+
+	aux = ms->arg_lst;
+	while (aux)
+	{
+		process = ft_new_proc(process);
+		i = 0;
+		if (aux->type == 7)
+			aux = aux->next;
+		ft_memset_cmds(aux, process);
+		while (aux && aux->job != 'p')
+		{
+			if (aux->type > 2)
+				aux = aux->next;
+			else if (aux->type < 3)
+			{
+				if (aux->prev == NULL)
+				{
+					process->args[i] = ft_strdup(aux->str);
+					i++;
+				}
+				else if (aux->prev->type == 3)
+				{
+					if (process->infile)
+						free(process->infile);
+					process->infile = ft_strdup(aux->str);
+					process->infd = open(process->infile, O_RDONLY);
+				}
+				else if (aux->prev->type == 4)
+				{
+					if (process->infile)
+						free(process->infile);
+					process->infile = ft_strdup(aux->str);
+					process->hd = true;
+				}
+				else if (aux->prev->type == 5)
+				{
+					if (process->outfile)
+						free(process->outfile);
+					process->outfile = ft_strdup(aux->str);
+					process->outfd = open(process->outfile, O_WRONLY | O_CREAT, 0744);
+					process->append = false;
+				}
+				else if (aux->prev->type == 6)
+				{
+					if (process->outfile)
+						free(process->outfile);
+					process->outfile = ft_strdup(aux->str);
+					process->outfd = open(process->outfile, O_WRONLY | O_CREAT | O_APPEND, 0744);
+					process->append = true;
+				}
+				else if (aux->prev->type == 7 && aux->type < 3)
+				{
+					process->args[i] = ft_strdup(aux->str);
+					i++;
+				}
+				else
+				{
+					process->args[i] = ft_strdup(aux->str);
+					i++;
+					if (aux->prev->job == 'C')
+						process->has_flags = true;
+				}
+				aux = aux->next;
+			}
+		}
+		ft_add_proc_back(proc_lst, process);
+		if (aux == NULL)
+			break ;
+		else
+			aux = aux->next;
+	}
+	return (*proc_lst);
+}

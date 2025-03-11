@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/03 16:47:13 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/03/11 15:14:28 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,27 +53,25 @@ typedef struct s_arg
 	struct s_arg	*prev;
 }	t_arg;
 
-/*
-JOBS:
-'<' -> 'i' -> type 3 | infile: must be the first node or come after a 'p'
-'<<' -> 'h' -> type 4 | here_doc: must be just after a 'C', and before a 'D'
-'>' -> 'o' -> type 5 | outfile: must come after a 'C' (or various) and before an 'O'
-'>>' -> 'a' -> type 6 | append: the same as 'o'
-'|' -> 'p' -> type 7 | pipe
-
--------the above are literal, the bellow are examples-------------------
-
-'intext.txt' -> 'I' -> type 0/1/2 | Infile name, must come after 'i'
-'outtext.txt' -> 'O' -> type 0/1/2 | Outfile name, must come after 'o'
-'cat' -> 'C' -> type 0/1/2 | Command, must be the first node or  come after an 'I', and must have 
-				an 'o' after if it has an outfile, or nothing if it goes to terminal
-'STOP' -> 'D' -> type 0/1/2 | delimiter: must be first or after a 'p' and before a 'h'
-*/
+typedef struct s_proc
+{
+	char			**args;
+	char			*infile;
+	int				infd;
+	char			*outfile;
+	int				outfd;
+	bool			append;
+	bool			hd;
+	bool			has_flags;
+	int				exit_status;
+	struct s_proc	*next;
+}	t_proc;
 
 typedef struct s_ms
 {
 	t_env	*env_lst;
 	t_arg	*arg_lst;
+	t_proc	*proc_lst;
 	char	*str;
 }	t_ms;
 
@@ -105,12 +103,19 @@ void	ft_add_env_back(t_env **lst, t_env *new);
 int		ft_env_lstsize(t_env **lst);
 void	ft_free_env_list(t_env **lst);
 
+// PROCESS LIST
+t_proc	*ft_new_proc(t_proc *proc_node);
+t_proc	*ft_last_proc(t_proc *lst);
+void	ft_add_proc_back(t_proc **lst, t_proc *new);
+void	ft_free_proc_node(t_proc *node);
+void	ft_free_proc_lst(t_proc **lst);
+
 // ENV STRUCT
 void	ft_print_env_lst(t_env **env_lst);
 t_env	*ft_create_env_lst(t_env **lst, char **env);
 t_env	*ft_get_env_lst(char **env);
 
-// ARG STRUCT
+// ARGUMENTS STRUCT
 void	ft_free_node_n_list(t_arg **lst, t_arg *node);
 void	ft_print_arg_lst(t_arg **arg_lst); //
 int		ft_get_type(char *str, char c, int *i);
@@ -132,7 +137,7 @@ void	ft_no_qt(char *str, int *i, t_arg *node, t_env *env_lst);
 void	ft_expand_str(t_arg *arg_node);
 void	ft_form_str(t_arg *arg_node);
 bool	ft_set_simple_str(t_arg *node, char *str, int *i, int len);
-bool	ft_set_alt_str(char *str, int *i, t_arg *arg_node, t_env *env_lst);
+bool	ft_set_alt_str(char *s, int *i, t_arg *arg_node, t_env *env_lst);
 bool	ft_set_arg_str(t_arg *arg_node, char *str, int *i, t_env *env_lst);
 void	ft_create_arg_lst(char *str, t_arg **arg_lst, t_env *env_lst);
 t_arg	*ft_arg_lst(char *str, t_env *env_lst);
@@ -143,9 +148,16 @@ void	ft_reset_expand_s2(t_arg *arg_node);
 void	ft_reset_expand_b(t_arg *arg_node);
 void	ft_check_expand(t_arg *nd, t_env *env_lst);
 
-// CHUNKS
+// PROCESS STRUCT
+void	ft_print_proc_lst(t_proc **proc_lst);
+void	ft_memset_cmds(t_arg *head, t_proc *process);
 void	ft_give_job(t_arg *node);
 void	ft_arg_jobs(t_ms *ms);
-void	ft_chunks(t_ms *ms);
+void	ft_prev_type_3to5(t_arg *aux, t_proc *process);
+void	ft_prev_type_6or7(t_arg *aux, t_proc *process, int *i);
+void	ft_word_type(t_arg *aux, t_arg *prev, t_proc *process, int *i);
+t_proc	*ft_create_proc(t_proc **proc_lst, t_ms *ms);
+bool	ft_check_syntax_errors(t_arg *lst);
+t_proc	*ft_proc(t_ms *ms);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 10:56:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/03 12:40:24 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/03/11 15:12:02 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,9 @@ t_arg	*ft_arg_lst(char *str, t_env *env_lst)
 		next = aux->next;
 		if (aux->str == NULL && (aux->next || aux->prev))
 			ft_lst_del_node(&arg_lst, aux);
+		else if (aux->str == NULL && (!aux->next || !aux->prev))
+			return (arg_lst = NULL);
 		aux = next;
 	}
-	// ft_print_arg_lst(&arg_lst);
 	return (arg_lst);
 }

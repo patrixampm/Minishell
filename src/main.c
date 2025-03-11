@@ -6,36 +6,43 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:55 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/04 10:49:28 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/03/11 15:07:12 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+static void	ft_free_ms(t_ms *ms)
+{
+	ft_free_arg_list(&ms->arg_lst);
+	ft_free_env_list(&ms->env_lst);
+	if (ms->proc_lst != NULL)
+		ft_free_proc_lst(&ms->proc_lst);
+	free(ms->str);
+	free(ms);
+}
 
 bool	ft_minishell(char *str, char **env)
 {
 	t_ms	*ms;
 
 	ms = malloc(sizeof(t_ms));
+	ms->proc_lst = NULL;
 	if (ms == NULL)
 		return (false);
 	ms->env_lst = ft_get_env_lst(env);
 	if (ms->env_lst == NULL)
 		return (false);
+	ms->str = ft_strdup(str);
 	ms->arg_lst = ft_arg_lst(str, ms->env_lst);
 	if (ms->arg_lst == NULL)
-	{
-		ft_free_arg_list(&ms->arg_lst);
-		ft_free_env_list(&ms->env_lst);
-		free(ms);
-		return (false);
-	}
-	ft_chunks(ms);
+		return (ft_free_ms(ms), false);
+	ms->proc_lst = ft_proc(ms);
+	if (ms->proc_lst == NULL)
+		return (ft_free_ms(ms), false);
 	ft_print_arg_lst(&ms->arg_lst);
-	ft_free_arg_list(&ms->arg_lst);
-	ft_free_env_list(&ms->env_lst);
-	free(ms);
-	return (true);
+	ft_print_proc_lst(&ms->proc_lst);
+	return (ft_free_ms(ms), true);
 }
 
 int	main(int ac, char **av, char **env)
@@ -51,11 +58,7 @@ int	main(int ac, char **av, char **env)
 			add_history(str);
 			if (!ft_strncmp(str, "EXIT", 5))
 				break ;
-			if (!ft_minishell(str, env))
-			{
-				free(str);
-				return (1);
-			}
+			ft_minishell(str, env);
 			free(str);
 		}
 	}

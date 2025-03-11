@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   chunks.c                                           :+:      :+:    :+:   */
+/*   proc_struct_a.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 14:21:29 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/04 10:35:36 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/03/11 15:06:40 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,10 @@ void	ft_give_job(t_arg *node)
 			node->job = 'I';
 		else if (prev->type == 4)
 			node->job = 'D';
-		else if (prev->type == 5)
+		else if (prev->type == 5 || prev->type == 6)
 			node->job = 'O';
 		else if (prev->type < 3 || prev->type == 7)
-		{
-			if ((next && next->type == 5))
-				node->job = 'I';
-			else
-				node->job = 'C';
-		}
+			node->job = 'C';
 		else
 			node->job = 'X';
 	}
@@ -64,12 +59,69 @@ void	ft_arg_jobs(t_ms *ms)
 	}
 }
 
-void	ft_chunks(t_ms *ms)
+void	ft_memset_cmds(t_arg *head, t_proc *process)
 {
+	t_arg	*aux;
+	int		count;
+
+	aux = head;
+	count = 0;
+	while (aux && aux->job != 'p')
+	{
+		if (aux->job == 'C')
+			count++;
+		aux = aux->next;
+	}
+	if (count > 0)
+	{
+		process->args = malloc(sizeof(char *) * (count + 1));
+		process->args[count] = NULL;
+	}
+	else
+		process->args = NULL;
+}
+
+void	ft_print_proc_lst(t_proc **proc_lst)
+{
+	t_proc	*aux;
+	int		i;
+
+	aux = *proc_lst;
+	while (aux)
+	{
+		i = 0;
+		if (aux->args)
+		{
+			while (aux->args[i])
+			{
+				printf("arg[%d]: %s\n", i, aux->args[i]);
+				i++;
+			}
+		}
+		printf("infile: %s infd: %d\n", aux->infile, aux->infd);
+		printf("outfile: %s outfd: %d\n", aux->outfile, aux->outfd);
+		printf("append?: %d\n", aux->append);
+		printf("hd?: %d\n", aux->hd);
+		printf("has_flags?: %d\n", aux->has_flags);
+		printf("exit_status: %d\n", aux->exit_status);
+		printf("--------------------------------------\n");
+		aux = aux->next;
+	}
+}
+
+t_proc	*ft_proc(t_ms *ms)
+{
+	t_proc	*proc_lst;
+
+	proc_lst = NULL;
 	ft_arg_jobs(ms);
-	// AQUÍ DEBERÍA CHECKEAR YA SI HAY ALGO RARO COMO UNA PIPE AL PRINCIPIO DE LA LISTA
-	// O SI HAY DOS PIPAS SEGUIDAS (BÁSICAMENTE CUALQUIER COSA QUE NO ACEPTE
-	// BASH) Y DEVOLVER UN MENSAJE DE ERROR CORRECTO
-	// ft_check_basic_order(ms)
-	//ft_create_chunks(ms);
+	if (!ft_check_syntax_errors(ms->arg_lst))
+		return (NULL);
+	proc_lst = ft_create_proc(&proc_lst, ms);
+	if (proc_lst == NULL)
+	{
+		ft_free_proc_lst(&proc_lst);
+		return (NULL);
+	}
+	return (proc_lst);
 }
