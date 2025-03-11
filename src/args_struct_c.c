@@ -6,11 +6,20 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 16:30:16 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/02/25 17:40:01 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/03/10 11:55:26 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+bool	ft_qt(char *str, int *i, t_arg *node, t_env *env)
+{
+	if (str[*i] == '\'')
+		ft_simple_qt(str, i, node);
+	else
+		ft_double_qt(str, i, node, env);
+	return (true);
+}
 
 void	ft_expand_str(t_arg *arg_node)
 {

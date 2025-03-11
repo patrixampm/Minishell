@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 10:56:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/02/26 13:56:25 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/03/11 15:12:02 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void	ft_print_arg_lst(t_arg **arg_lst)
 		printf("node %d str: %s\n", i, aux->str);
 		printf("node %d len: %d\n", i, aux->len);
 		printf("node %d type: %d\n", i, aux->type);
+		printf("node %d job: %c\n", i, aux->job);
 		printf("node %d has expand: %d\n", i, aux->has_expand);
 		printf("node %d has valid expand: %d\n", i, aux->valid_expand);
 		printf("--------------------------\n");
@@ -85,10 +86,11 @@ t_arg	*ft_arg_lst(char *str, t_env *env_lst)
 	while (aux)
 	{
 		next = aux->next;
-		if (aux->str == NULL)
+		if (aux->str == NULL && (aux->next || aux->prev))
 			ft_lst_del_node(&arg_lst, aux);
+		else if (aux->str == NULL && (!aux->next || !aux->prev))
+			return (arg_lst = NULL);
 		aux = next;
 	}
-	ft_print_arg_lst(&arg_lst);
 	return (arg_lst);
 }
