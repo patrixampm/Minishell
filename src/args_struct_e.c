@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 13:40:58 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/03 12:24:25 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/03/12 11:20:50 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,10 @@ void	ft_iter_n_check(char *s, int j, int *k, t_arg *node)
 			|| s[j + 1] == '"' || s[j + 1] == '\0' || s[j + 1] == '?'))
 	{
 		if (s[j + 1] == '?')
+		{
+			node->expand_exit = true;
 			node->exp = ft_strdup("$?");
+		}
 		else
 			node->exp = ft_strdup("$");
 	}

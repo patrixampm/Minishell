@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 10:56:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/11 15:12:02 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/03/12 11:22:37 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void	ft_print_arg_lst(t_arg **arg_lst)
 		printf("node %d job: %c\n", i, aux->job);
 		printf("node %d has expand: %d\n", i, aux->has_expand);
 		printf("node %d has valid expand: %d\n", i, aux->valid_expand);
+		printf("node %d expand exit status: %d\n", i, aux->expand_exit);
 		printf("--------------------------\n");
 		i++;
 		aux = aux->next;

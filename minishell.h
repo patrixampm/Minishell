@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/11 15:14:28 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/03/12 11:19:50 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ typedef struct s_arg
 	char			job;
 	bool			has_expand;
 	bool			valid_expand;
+	bool			expand_exit;
 	struct s_arg	*next;
 	struct s_arg	*prev;
 }	t_arg;
