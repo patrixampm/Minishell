@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 17:13:28 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/11 15:02:19 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/03/12 13:20:39 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	ft_word_type(t_arg *aux, t_arg *prev, t_proc *process, int *i)
 		{
 			process->args[*i] = ft_strdup(aux->str);
 			*i += 1;
-			if (prev->job == 'C')
+			if (*i != 0)
 				process->has_flags = true;
 		}
 		aux = aux->next;
