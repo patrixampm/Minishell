@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   proc_list.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 16:15:27 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/11 15:04:01 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/03/12 13:54:48 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ t_proc	*ft_new_proc(t_proc *proc_node)
 	proc_node->hd = false;
 	proc_node->has_flags = false;
 	proc_node->exit_status = 0;
+	proc_node->is_builtin = false;
 	proc_node->next = NULL;
 	return (proc_node);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   proc_struct_c.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 17:13:28 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/12 13:20:39 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/03/12 13:44:23 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,8 @@ t_proc	*ft_create_proc(t_proc **proc_lst, t_ms *ms)
 		if (aux->type == 7)
 			aux = aux->next;
 		ft_memset_cmds(aux, process);
+		if (aux->job == 'C')
+			ft_builtin_check(aux, process);
 		while (aux && aux->job != 'p')
 		{
 			ft_word_type(aux, aux->prev, process, &i);

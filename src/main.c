@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:55 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/12 11:18:07 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/03/12 19:47:02 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ bool	ft_minishell(char *str, char **env)
 		return (ft_free_ms(ms), false);
 	ft_print_arg_lst(&ms->arg_lst);
 	ft_print_proc_lst(&ms->proc_lst);
+	ft_builtin_execute(ms->proc_lst, ms);
 	return (ft_free_ms(ms), true);
 }
 

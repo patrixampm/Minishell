@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_struct.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 12:25:42 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/05 15:28:51 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/03/12 19:58:15 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ void	ft_print_env_lst(t_env **env_lst)
 	aux = *env_lst;
 	while (aux)
 	{
-		printf("node name: %s\n", aux->name);
-		printf("node content: %s\n", aux->content);
+		printf("%s=", aux->name);
+		printf("%s\n", aux->content);
 		aux = aux->next;
 	}
 }
@@ -64,4 +64,28 @@ t_env	*ft_get_env_lst(char **env)
 	}
 	else
 		return (env_lst);
+}
+
+
+void	ft_env_del_node(t_env **lst, char *node)
+{
+	t_env	*temp;
+	int		i;
+	
+	i = 0;
+	temp = NULL;
+	while (lst[i]->next->next)
+	{
+		if(!ft_strncmp(lst[i]->next->name, node, ft_strlen(node)))
+		{
+			temp = lst[i]->next;
+			lst[i]->next = lst[i]->next->next;
+			/* free(temp->name);
+			free(temp->content);
+			free(temp); */
+			break ;
+		}
+		i++;
+	}
+	// is it last check then dont go into next just delete and set next as NULL
 }

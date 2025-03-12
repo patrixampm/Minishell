@@ -30,6 +30,10 @@ aunqueexpand
 ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo $expand aun"que"juju$no'expand'
 aunquejujuexpand
 
+echo \t joke
+t joke
+echo \n joke
+n joke
 
 "abc '$USER' cba"
 Make'file'|"" $US'ER'""""

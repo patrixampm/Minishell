@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/12 11:19:50 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/03/12 19:39:03 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ typedef struct s_proc
 	bool			hd;
 	bool			has_flags;
 	int				exit_status;
+	bool			is_builtin;
 	struct s_proc	*next;
 }	t_proc;
 
@@ -103,6 +104,7 @@ t_env	*ft_last_env(t_env *lst);
 void	ft_add_env_back(t_env **lst, t_env *new);
 int		ft_env_lstsize(t_env **lst);
 void	ft_free_env_list(t_env **lst);
+void	ft_env_del_node(t_env **lst, char *node);
 
 // PROCESS LIST
 t_proc	*ft_new_proc(t_proc *proc_node);
@@ -160,5 +162,10 @@ void	ft_word_type(t_arg *aux, t_arg *prev, t_proc *process, int *i);
 t_proc	*ft_create_proc(t_proc **proc_lst, t_ms *ms);
 bool	ft_check_syntax_errors(t_arg *lst);
 t_proc	*ft_proc(t_ms *ms);
+
+// BUILT-IN FUNCTIONS
+void	ft_builtin_check(t_arg *arg, t_proc *proc);
+void	ft_builtin_execute(t_proc *p, t_ms *ms);
+
 
 #endif
