@@ -26,7 +26,7 @@ SHARED_FILES = arg_list args_struct_a \
 				args_struct_d args_struct_e \
 				env_list env_struct expand closures \
 				proc_list proc_struct_a proc_struct_b proc_struct_c \
-				builtins\
+				builtins utils\
 
 SRC_FILES = main $(SHARED_FILES)
 BONUS_FILES = main_bonus

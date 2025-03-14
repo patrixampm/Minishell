@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/12 19:39:03 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/03/14 21:23:20 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ t_env	*ft_last_env(t_env *lst);
 void	ft_add_env_back(t_env **lst, t_env *new);
 int		ft_env_lstsize(t_env **lst);
 void	ft_free_env_list(t_env **lst);
-void	ft_env_del_node(t_env **lst, char *node);
+//void	ft_env_del_node(t_env **lst, char *node);
 
 // PROCESS LIST
 t_proc	*ft_new_proc(t_proc *proc_node);
@@ -117,6 +117,7 @@ void	ft_free_proc_lst(t_proc **lst);
 void	ft_print_env_lst(t_env **env_lst);
 t_env	*ft_create_env_lst(t_env **lst, char **env);
 t_env	*ft_get_env_lst(char **env);
+char	**ft_create_env(char **env); //maybe create matrix function & then specific for env and exp
 
 // ARGUMENTS STRUCT
 void	ft_free_node_n_list(t_arg **lst, t_arg *node);
@@ -165,7 +166,10 @@ t_proc	*ft_proc(t_ms *ms);
 
 // BUILT-IN FUNCTIONS
 void	ft_builtin_check(t_arg *arg, t_proc *proc);
-void	ft_builtin_execute(t_proc *p, t_ms *ms);
+void	ft_builtin_execute(t_proc *p, t_ms *ms, char ***env);
 
-
+// UTILS
+void	ft_free_matrix(char **matrix);
+int		ft_matrix_size(char **matrix);
+int		ft_check_arg_number(char **args, int expect);
 #endif

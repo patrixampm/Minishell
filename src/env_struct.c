@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 12:25:42 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/12 19:58:15 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/03/14 21:25:23 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,26 +66,22 @@ t_env	*ft_get_env_lst(char **env)
 		return (env_lst);
 }
 
-
-void	ft_env_del_node(t_env **lst, char *node)
+char	**ft_create_env(char **env)
 {
-	t_env	*temp;
 	int		i;
-	
+	char	**temp;
+
 	i = 0;
-	temp = NULL;
-	while (lst[i]->next->next)
+	temp = ft_calloc(ft_matrix_size(env) + 1, sizeof(char *));
+	if (!temp)
+		return (NULL);
+	while(env[i])
 	{
-		if(!ft_strncmp(lst[i]->next->name, node, ft_strlen(node)))
-		{
-			temp = lst[i]->next;
-			lst[i]->next = lst[i]->next->next;
-			/* free(temp->name);
-			free(temp->content);
-			free(temp); */
-			break ;
-		}
+		if (!ft_strncmp(env[i], "_=", 2))
+			temp[i] = ft_strdup("_=/usr/bin/env");
+		else
+			temp[i] = ft_strdup(env[i]);
 		i++;
 	}
-	// is it last check then dont go into next just delete and set next as NULL
+	return (temp);
 }

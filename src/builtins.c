@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 12:28:18 by aehrl             #+#    #+#             */
-/*   Updated: 2025/03/12 19:53:16 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/03/14 21:23:39 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,6 @@ void	ft_builtin_echo(t_proc *p)
 	int	j;
 
 	i = 1;
-	// Problem with mnultiple spaces before the first input (GENERAL PROBLEM)
-	// Problem with \t & \n not executing at all
-	//->SUGESTION add a char *input for whole command that I acces to check 
-	// ENTERS ARE SEEN AS OPERATIONS IN LOG OF TERMINAL (NOT THE CASE IN ORIGINAL)
 	while (p->has_flags == true)
 	{
 		j = 1;
@@ -79,45 +75,81 @@ void	ft_builtin_echo(t_proc *p)
 		ft_putstr_fd("\n", 1);
 }
 
-void	ft_builtin_unset(t_proc *p , t_env *env_lst)
+int	ft_builtin_unset_checker(char **env, char *unset)
 {
-	t_env	*temp;
 	int		i;
+	char	*temp;
 
-	temp = env_lst;
 	i = 0;
-	while (p->args[i] && i <= 2)
-		i++;
-	if (i > 2)
+	temp = ft_strjoin(unset, "=");
+	while (env[i])
 	{
-		printf("TESTING ERROR\n Invalid argument: %s\n", p->args[i]);
-		return ;
-	}
-	i--;
-	while (temp)
-	{
-		if (!ft_strncmp(temp->name, p->args[i], ft_strlen(p->args[i])))
+		if (!ft_strncmp(env[i], temp, ft_strlen(temp)))
 		{
-			printf("unset: %s\n",temp->content);
-			ft_env_del_node(&temp, temp->name);
-			return ;
+			free(temp);
+			return (i);
 		}
-		temp = temp->next;
+		i++;
+	}
+	free(temp);
+	return (-1);
+}
+
+char	**ft_builtin_unset(t_proc *p ,char **env)
+{	
+	char	**temp;
+	int		i;
+	int		check;
+	int		j;
+
+	check = ft_builtin_unset_checker(env, p->args[1]);
+	if (ft_check_arg_number(p->args, 2) == -1 || check == -1)
+		return (env);
+	j = 0;
+	i = 0;
+	temp = ft_calloc(sizeof(char *), ft_matrix_size(env));
+	while (env[i])
+	{
+		if (i == check)
+			i++;
+		else if (env[i])
+		{
+			temp[j] = ft_strdup(env[i]);
+			j++;
+			i++;
+		}
+	}
+	ft_free_matrix(env);
+	return (temp);
+}
+
+void	ft_print_matrix(char **matrix)
+{
+	int	i;
+
+	i = 0;
+	while(matrix[i])
+	{
+		printf("%s\n", matrix[i]);
+		i++;
 	}
 }
 
-void	ft_builtin_execute(t_proc *proc, t_ms *ms)
-{
+
+void	ft_builtin_execute(t_proc *proc, t_ms *ms, char ***env)
+{	
 	if (!ft_strncmp(proc->args[0], "pwd", ft_strlen(proc->args[0])))
 		ft_buitlin_pwd(ms->env_lst);
 	else if (!ft_strncmp(proc->args[0], "echo", ft_strlen(proc->args[0])))
 		ft_builtin_echo(proc);
 	else if (!ft_strncmp(proc->args[0], "env", ft_strlen(proc->args[0])))
-		ft_print_env_lst(&ms->env_lst); // // ADD CHECK FOR PROC to see if flags are given (if so fail)
+		ft_print_matrix(*env); 
 	else if (!ft_strncmp(proc->args[0], "unset", ft_strlen(proc->args[0])))
-		ft_builtin_unset(proc ,ms->env_lst);
+		*env = ft_builtin_unset(proc, *env);
 	/*else if (!ft_strncmp(proc->args[0], "cd", ft_strlen(proc->args[0])))
-		ft_builtin_cd(t_proc *proc);
+	ft_builtin_cd(t_proc *proc);
+	else if (!ft_strncmp(proc->args[0], "env", ft_strlen(proc->args[0])))
+		ft_print_env_lst(&ms->env_lst); 
 	else if (!ft_strncmp(proc->args[0], "export", ft_strlen(proc->args[0])))
 		ft_builtin_export(t_proc *proc);
 	else if (!ft_strncmp(proc->args[0], "exit", ft_strlen(proc->args[0])))

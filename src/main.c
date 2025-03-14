@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:55 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/12 19:47:02 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/03/14 20:43:50 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void	ft_free_ms(t_ms *ms)
 	free(ms);
 }
 
-bool	ft_minishell(char *str, char **env)
+bool	ft_minishell(char *str, char ***env)
 {
 	t_ms	*ms;
 
@@ -30,7 +30,7 @@ bool	ft_minishell(char *str, char **env)
 	ms->proc_lst = NULL;
 	if (ms == NULL)
 		return (false);
-	ms->env_lst = ft_get_env_lst(env);
+	ms->env_lst = ft_get_env_lst(*env);
 	if (ms->env_lst == NULL)
 		return (false);
 	ms->str = ft_strdup(str);
@@ -42,14 +42,18 @@ bool	ft_minishell(char *str, char **env)
 		return (ft_free_ms(ms), false);
 	ft_print_arg_lst(&ms->arg_lst);
 	ft_print_proc_lst(&ms->proc_lst);
-	ft_builtin_execute(ms->proc_lst, ms);
+	ft_builtin_execute(ms->proc_lst, ms, env);
 	return (ft_free_ms(ms), true);
 }
 
+	
+	
 int	main(int ac, char **av, char **env)
 {
 	char	*str;
-
+	char 	**new_env;
+	// need to add a export
+	new_env = ft_create_env(env);
 	(void)av;
 	if (ac == 1)
 	{
@@ -59,12 +63,13 @@ int	main(int ac, char **av, char **env)
 			add_history(str);
 			if (!ft_strncmp(str, "EXIT", 5))
 				break ;
-			ft_minishell(str, env);
+			ft_minishell(str, &new_env);
 			free(str);
 		}
 	}
 	else
 		return (1);
+	ft_free_matrix(new_env);
 	free(str);
 	return (0);
 }
