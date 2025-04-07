@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 17:26:13 by aehrl             #+#    #+#             */
-/*   Updated: 2025/03/14 21:24:27 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/04/07 18:15:46 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,14 @@ int	ft_check_arg_number(char **args, int expect)
 	int	i;
 	
 	i = 0;
-	while (args[i] && i <= expect)
+	while (args[i])
 		i++;
-	if (i > expect)
+	if (expect != 0 && i > expect)
 	{
 		printf("TESTING ERROR\n Invalid argument: %s\n", args[i]);
 		return (-1);
 	}
-	return (0);
+	return (i);
 }
 
 int	ft_matrix_size(char **matrix)
@@ -55,3 +55,50 @@ void	ft_free_matrix(char **matrix)
 		matrix = NULL;
 	}
 }
+
+void	ft_print_matrix(char **matrix)
+{
+	int	i;
+
+	i = 0;
+	while(matrix[i])
+	{
+		printf("%s\n", matrix[i]);
+		i++;
+	}
+}
+
+void	ft_print_export_lst(t_env **exp_lst)
+{
+	t_env	*aux;
+
+	aux = *exp_lst;
+	while (aux)
+	{
+		if (aux->content != NULL)
+		{
+			printf("declare -x %s=", aux->name);
+			printf("\"%s\"\n", aux->content);
+		}
+		else
+			printf("declare -x %s\n", aux->name);
+		aux = aux->next;
+	}
+}
+/* void	ft_print_export_lst(t_env **exp_lst)
+{
+	t_env	*aux;
+
+	aux = *exp_lst;
+	while (aux)
+	{
+		if (!aux->content)
+			printf("declare -x %s\n", aux->name);
+		else
+		{
+			printf("declare -x %s=", aux->name);
+			printf("\"%s\"\n", aux->content);
+		}
+		aux = aux->next;
+	}
+} */

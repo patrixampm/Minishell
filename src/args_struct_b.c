@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   args_struct_b.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 16:32:31 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/11 15:11:01 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/03/18 17:59:48 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	ft_get_type(char *str, char c, int *i)
 	if (str[*i] == 0)
 		return (type);
 	if (ft_isalpha(c) == 1 || c == '$' || c == '-'
-		|| c == '.' || c == '/')
+		|| c == '.' || c == '/' || c == '\\')
 		return (type = 0);
 	if (c == '\'')
 		return (type = 1);

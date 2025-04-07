@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 12:28:18 by aehrl             #+#    #+#             */
-/*   Updated: 2025/03/29 20:15:19 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/04/07 17:17:57 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,32 +29,22 @@ void	ft_builtin_check(t_arg *arg, t_proc *proc)
 }
 
 
-void	ft_buitlin_pwd(t_env *env_lst, t_proc *p)
+void	ft_buitlin_pwd(t_proc *p)
 {
-	t_env	*temp;
-	int		i;
+	char	*aux;
 	
-	i = 1;
-	temp = env_lst;
-	// might wanna handle this with erro code 2 (eg give this a int return)
+	// might wanna handle this with error code 2 (eg give this a int return)
 	if (p->args[1])
 	{
 		if (p->args[1][0] == '-' && p->args[1][1] != '\0')
 		{
-			printf("pwd: -%c: invalid option\n", p->args[1][1]);
+			printf("pwd: -%c: invalid option\n", p->args[1][1]); //check if this is correct
 			return ;
 		}
 	}
-	while (temp)
-	{
-		// switch to getenv() function
-		if (!ft_strncmp(temp->name, "PWD", 3))
-		{
-			printf("%s\n", temp->content);
-			return ;
-		}
-		temp = temp->next;
-	}
+	aux = getcwd(NULL, 0);
+	printf("%s\n", aux);
+	free(aux);
 }
 
 void	ft_builtin_echo(t_proc *p)
@@ -104,7 +94,7 @@ int	ft_builtin_unset_checker(char **env, char *unset)
 	free(temp);
 	return (-1);
 }
-
+// need to add exp and delete from export list as well
 char	**ft_builtin_unset(t_proc *p ,char **env)
 {	
 	char	**temp;
@@ -113,7 +103,7 @@ char	**ft_builtin_unset(t_proc *p ,char **env)
 	int		j;
 
 	check = ft_builtin_unset_checker(env, p->args[1]);
-	if (ft_check_arg_number(p->args, 2) == -1 || check == -1)
+	if (ft_check_arg_number(p->args, 2) == -1 || check == -1) //check this as we can do multiple unsets at once
 		return (env);
 	j = 0;
 	i = 0;
@@ -133,20 +123,20 @@ char	**ft_builtin_unset(t_proc *p ,char **env)
 	return (temp);
 }
 
-void	ft_builtin_execute(t_proc *proc, t_ms *ms, char ***env)
+void	ft_builtin_execute(t_proc *proc, char ***env, t_env **exp)
 {	
 	if (!ft_strncmp(proc->args[0], "pwd", ft_strlen(proc->args[0])))
-		ft_buitlin_pwd(ms->env_lst, proc);
+		ft_buitlin_pwd(proc);
 	else if (!ft_strncmp(proc->args[0], "echo", ft_strlen(proc->args[0])))
 		ft_builtin_echo(proc);
 	else if (!ft_strncmp(proc->args[0], "env", ft_strlen(proc->args[0])))
 		ft_print_matrix(*env); 
 	else if (!ft_strncmp(proc->args[0], "unset", ft_strlen(proc->args[0])))
 		*env = ft_builtin_unset(proc, *env);
+	else if (!ft_strncmp(proc->args[0], "export", ft_strlen(proc->args[0])))
+		ft_builtin_export(proc, env, exp); //Need to add env 
 	/*else if (!ft_strncmp(proc->args[0], "cd", ft_strlen(proc->args[0])))
 	ft_builtin_cd(t_proc *proc);
-	else if (!ft_strncmp(proc->args[0], "export", ft_strlen(proc->args[0])))
-		ft_builtin_export(t_proc *proc);
 	else if (!ft_strncmp(proc->args[0], "exit", ft_strlen(proc->args[0])))
 		ft_builtin_export(t_proc *proc); */
 }

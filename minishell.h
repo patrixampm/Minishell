@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/14 21:23:20 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/04/07 18:37:10 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <readline/history.h>
 
 # include "libft/libft.h"
+// We can add the global path here inc case of env -i initialisation
 
 # define READ 0
 # define WRITE 1
@@ -117,7 +118,7 @@ void	ft_free_proc_lst(t_proc **lst);
 void	ft_print_env_lst(t_env **env_lst);
 t_env	*ft_create_env_lst(t_env **lst, char **env);
 t_env	*ft_get_env_lst(char **env);
-char	**ft_create_env(char **env); //maybe create matrix function & then specific for env and exp
+char	**ft_create_env(char **env, t_env **export);
 
 // ARGUMENTS STRUCT
 void	ft_free_node_n_list(t_arg **lst, t_arg *node);
@@ -166,10 +167,22 @@ t_proc	*ft_proc(t_ms *ms);
 
 // BUILT-IN FUNCTIONS
 void	ft_builtin_check(t_arg *arg, t_proc *proc);
-void	ft_builtin_execute(t_proc *p, t_ms *ms, char ***env);
+void	ft_builtin_execute(t_proc *proc, char ***env, t_env **exp);
+t_env	*ft_create_export_lst(char **env);
+void	ft_print_export_lst(t_env **exp_lst);
+int		ft_builtin_unset_checker(char **env, char *unset);
+void	ft_builtin_export(t_proc *p, char ***env, t_env **exp);
+void	ft_slipin_node_env(t_env *a, t_env *b);
+void	ft_add_env_front(t_env **lst, t_env *new);
+
+// PIPEX IMPLEMENTATION
+int		ft_pipes(char *cmd, int fds[], char *envp[], int first_last[]);
+
 
 // UTILS
 void	ft_free_matrix(char **matrix);
 int		ft_matrix_size(char **matrix);
 int		ft_check_arg_number(char **args, int expect);
+void	ft_print_matrix(char **matrix);
+void	ft_print_export_lst(t_env **exp_lst);
 #endif
