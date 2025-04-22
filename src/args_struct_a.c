@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   args_struct_a.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 10:56:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/12 11:22:37 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/04/15 13:52:29 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	ft_print_arg_lst(t_arg **arg_lst)
 	}
 }
 
-void	ft_create_arg_lst(char *str, t_arg **arg_lst, t_env *env_lst)
+int	ft_create_arg_lst(char *str, t_arg **arg_lst, t_env *env_lst)
 {
 	t_arg	*arg_node;
 	int		i;
@@ -55,22 +55,19 @@ void	ft_create_arg_lst(char *str, t_arg **arg_lst, t_env *env_lst)
 	{
 		while (str[i] == ' ')
 			i++;
+		if (str[i] == '\0')
+			return (0);
 		arg_node = ft_new_arg(arg_node);
 		arg_node->type = ft_get_type(str, str[i], &i);
 		if (arg_node->type == -1)
-		{
-			ft_free_node_n_list(arg_lst, arg_node);
-			break ;
-		}
+			return (ft_free_node_n_list(arg_lst, arg_node), -1);
 		if (!ft_set_arg_str(arg_node, str, &i, env_lst))
-		{
-			ft_free_arg_list(arg_lst);
-			break ;
-		}
+			return (ft_free_arg_list(arg_lst), -1);
 		ft_add_arg_back(arg_lst, arg_node);
 		if (i >= ft_strlen(str))
-			break ;
+			return(0);
 	}
+	return (0);
 }
 
 t_arg	*ft_arg_lst(char *str, t_env *env_lst)

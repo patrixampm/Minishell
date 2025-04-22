@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 12:25:42 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/04/07 19:01:43 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/04/15 11:26:09 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,35 +68,24 @@ char	**ft_set_global_env_exp(t_env **export)
 {
 	char	**path;
 	char	*aux;
-	//char	**temp_exp;
+	char	*temp;
 	t_env	*node;
 	
+	temp = "PATH=/usr/local/sbin:/usr/local/bin:";
 	path = (char **)ft_calloc(sizeof(char *), 5);
 	if (!path)
 		return (NULL); // add error handiling 
 	aux = getcwd(NULL, 0);
 	path[0] = ft_strjoin("PWD=", aux);
-	path[1] = ft_strdup("PATH=/usr/local/sbin:/usr/local/bin:");
-	path[1] = ft_strjoin(path[1], "/usr/sbin:/usr/bin:/sbin:/bin");
+	path[1] = ft_strjoin(temp, "/usr/sbin:/usr/bin:/sbin:/bin");
 	path[2] = ft_strdup("SHLVL=1");
 	path[3] = ft_strdup("_=/usr/bin/env");
-/* 	temp_exp = (char **)ft_calloc(sizeof(char *), 5);
-	if (!temp_exp)
-		return (NULL); // add error handiling 
-	path[1] = ft_strjoin("OLDPWD=", NULL);
-	path[1] = ft_strjoin("PWD=", aux);
-	path[2] = ft_strdup("PATH=/usr/local/sbin:/usr/local/bin:");
-	path[2] = ft_strjoin(path[1], "/usr/sbin:/usr/bin:/sbin:/bin");
-	path[3] = ft_strdup("SHLVL=1"); 
-	*export = ft_get_env_lst(temp_exp);*/
-	*export = ft_new_env("OLDPWD", NULL);
-	node = ft_new_env("PWD", aux); 
+	*export = ft_new_env(ft_strdup("OLDPWD"), NULL);
+	node = ft_new_env(ft_strdup("PWD"), ft_strdup(aux)); 
 	ft_add_env_back(export, node);
-	node = ft_new_env("SHLVL", "1");
+	node = ft_new_env(ft_strdup("SHLVL"), ft_strdup("1"));
 	ft_add_env_back(export, node);
-	ft_print_env_lst(export);
-	//free(aux);
-	//free(temp_exp);
+	free(aux);
 	return (path);
 }
 

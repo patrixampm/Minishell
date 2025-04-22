@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/04/07 18:37:10 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/04/15 14:55:47 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <readline/history.h>
 
 # include "libft/libft.h"
+# include "libft/get_next_line.h"
 // We can add the global path here inc case of env -i initialisation
 
 # define READ 0
@@ -83,10 +84,15 @@ typedef struct s_pipex
 	int		iterator;
 	int		p_count;
 	int		cmd_count;
-	int		**pipes;
-	pid_t	*pids;
+	//int		**pipes;
+	int		pipes[2];
+	int		in;
+	int		out;
+	//pid_t	*pids;
+	pid_t	pids;
 	bool	here_doc;
-	t_env	*all_paths;
+	//t_env	*all_paths;
+	char	**all_paths;
 	char	**clean_paths;
 	char	**cmd_args;
 	int		status;
@@ -144,7 +150,7 @@ void	ft_form_str(t_arg *arg_node);
 bool	ft_set_simple_str(t_arg *node, char *str, int *i, int len);
 bool	ft_set_alt_str(char *s, int *i, t_arg *arg_node, t_env *env_lst);
 bool	ft_set_arg_str(t_arg *arg_node, char *str, int *i, t_env *env_lst);
-void	ft_create_arg_lst(char *str, t_arg **arg_lst, t_env *env_lst);
+int		ft_create_arg_lst(char *str, t_arg **arg_lst, t_env *env_lst);
 t_arg	*ft_arg_lst(char *str, t_env *env_lst);
 
 // ENV EXPAND
@@ -164,6 +170,7 @@ void	ft_word_type(t_arg *aux, t_arg *prev, t_proc *process, int *i);
 t_proc	*ft_create_proc(t_proc **proc_lst, t_ms *ms);
 bool	ft_check_syntax_errors(t_arg *lst);
 t_proc	*ft_proc(t_ms *ms);
+int		ft_proc_lstsize(t_proc **lst);
 
 // BUILT-IN FUNCTIONS
 void	ft_builtin_check(t_arg *arg, t_proc *proc);
@@ -172,11 +179,17 @@ t_env	*ft_create_export_lst(char **env);
 void	ft_print_export_lst(t_env **exp_lst);
 int		ft_builtin_unset_checker(char **env, char *unset);
 void	ft_builtin_export(t_proc *p, char ***env, t_env **exp);
+
+// EXPORT UTILS
 void	ft_slipin_node_env(t_env *a, t_env *b);
 void	ft_add_env_front(t_env **lst, t_env *new);
+void	ft_search_export(t_env **exp, char	*name, char	*value);
+char	**ft_env_add_or_set(char **env, int	i, char	*name, char	*value);
+int 	ft_search_export_slipin(t_env **exp, char *name, char *value);
+int		ft_search_export_front(t_env **exp, char *name, char *value);
 
 // PIPEX IMPLEMENTATION
-int		ft_pipes(char *cmd, int fds[], char *envp[], int first_last[]);
+int		ft_pipes(t_pipex *pipex, t_proc *p, char **env);
 
 
 // UTILS

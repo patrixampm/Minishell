@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 12:28:18 by aehrl             #+#    #+#             */
-/*   Updated: 2025/04/07 17:17:57 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/04/10 16:08:36 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,5 +138,5 @@ void	ft_builtin_execute(t_proc *proc, char ***env, t_env **exp)
 	/*else if (!ft_strncmp(proc->args[0], "cd", ft_strlen(proc->args[0])))
 	ft_builtin_cd(t_proc *proc);
 	else if (!ft_strncmp(proc->args[0], "exit", ft_strlen(proc->args[0])))
-		ft_builtin_export(t_proc *proc); */
+		ft_builtin_exit(t_proc *proc); */
 }

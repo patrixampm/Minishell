@@ -6,11 +6,31 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:29:31 by aehrl             #+#    #+#             */
-/*   Updated: 2025/04/07 18:45:47 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/04/10 16:11:15 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	ft_add_env_front(t_env **lst, t_env *new)
+{
+	t_env	*aux;
+	
+	aux = new;
+	if (!new || !lst)
+		return ;
+	aux->next = *lst;
+	*lst = aux;
+}
+
+void	ft_slipin_node_env(t_env *a, t_env *b)
+{
+	/* t_env	*c;
+
+	c = a->next; */
+	b->next = a->next;
+	a->next = b;
+}
 
 t_env	*ft_set_export_lst(t_env **lst, char **env)
 {

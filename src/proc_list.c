@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 16:15:27 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/12 13:54:48 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/04/15 16:04:51 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ t_proc	*ft_new_proc(t_proc *proc_node)
 	proc_node->infile = NULL;
 	proc_node->infd = 0;
 	proc_node->outfile = NULL;
-	proc_node->outfd = 0;
+	proc_node->outfd = 1;
 	proc_node->append = false;
 	proc_node->hd = false;
 	proc_node->has_flags = false;
