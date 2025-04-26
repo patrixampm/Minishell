@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/04/15 14:55:47 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/04/26 18:57:51 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,7 +189,7 @@ int 	ft_search_export_slipin(t_env **exp, char *name, char *value);
 int		ft_search_export_front(t_env **exp, char *name, char *value);
 
 // PIPEX IMPLEMENTATION
-int		ft_pipes(t_pipex *pipex, t_proc *p, char **env);
+int		ft_pipes(t_pipex *pipex, t_proc *p, char **env, t_env **exp);
 
 
 // UTILS

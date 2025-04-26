@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:55 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/04/22 17:41:24 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/04/26 19:36:04 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,17 +43,17 @@ t_pipex	ft_init_pipex(t_proc *p, char ***env)
 {
 	t_pipex	pipex;
 	t_proc	*aux;
-	char *temp;
+	//char *temp;
 	int		i;
 
 	aux = p;
-	temp = getenv("PATH");
+	//temp = getenv("PATH");
 	i = 0;
 	pipex.iterator = 0;
 	pipex.pipes[0] = 0;
 	pipex.pipes[1] = 1;
-	pipex.in = 1; // 
-	pipex.out = 2; // 
+	pipex.in = 0; // 
+	pipex.out = 1; // 
 	pipex.p_count = ft_proc_lstsize(&p);
 	while (aux->args[i])
 		i++;
@@ -107,24 +107,13 @@ void ft_excecute(t_proc *p, char ***env, t_env **exp)
 
 	aux = p;
 	pipex = ft_init_pipex(p, env);
+	pipex.in = p->infd;
+	//ft_print_pipex(&pipex);
 	while(pipex.iterator < pipex.p_count && aux != NULL) // check status
 	{
 		pipex.clean_paths = ft_split(getenv("PATH"), ':');
-		//if (p->outfd != STDOUT_FILENO)
-			pipex.out = p->outfd;
-	/* 	if (p->infd)
-			pipex.in = p->infd;
-		 */
-		//ft_print_pipex(&pipex);
-		if (aux->is_builtin == true)
-			ft_builtin_execute(aux, env, exp); // add fd for where to put strings
-		else
-		{
-			ft_pipes(&pipex, aux, *env);
-			//pipex.in = pipefd[0];
-			//pipex.out = pipefd[1];
-		}
-
+		pipex.out = p->outfd;
+		ft_pipes(&pipex, aux, *env, exp);
 		pipex.iterator++;
 		if (aux->next != NULL)
 		{

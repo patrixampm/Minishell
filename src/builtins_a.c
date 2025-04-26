@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 12:28:18 by aehrl             #+#    #+#             */
-/*   Updated: 2025/04/10 16:08:36 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/04/26 18:58:22 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ void	ft_buitlin_pwd(t_proc *p)
 		}
 	}
 	aux = getcwd(NULL, 0);
+//	ft_putendl_fd(aux, fd);
 	printf("%s\n", aux);
 	free(aux);
 }
@@ -66,13 +67,13 @@ void	ft_builtin_echo(t_proc *p)
 	}
 	while (p->args[i])
 	{
-		ft_putstr_fd(p->args[i], 1);
+		printf("%s",p->args[i]);
 		if (p->args[i + 1])
-			ft_putchar_fd(' ', 1);
+			printf(" ");
 		i++;
 	}
 	if (p->has_flags == false)
-		ft_putstr_fd("\n", 1);
+		printf("\n");
 }
 
 int	ft_builtin_unset_checker(char **env, char *unset)
