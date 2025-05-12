@@ -27,7 +27,7 @@ SHARED_FILES = arg_list args_struct_a \
 				env_list env_struct expand closures \
 				proc_list proc_struct_a proc_struct_b proc_struct_c \
 				export_list builtins_a builtins_b builtins_c utils \
-				pipex_a pipex_b \
+				pipex_a pipex_b prints\
 
 SRC_FILES = main $(SHARED_FILES)
 BONUS_FILES = main_bonus

@@ -6,12 +6,12 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 12:28:18 by aehrl             #+#    #+#             */
-/*   Updated: 2025/04/26 18:58:22 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/04/30 17:49:58 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-// change ms to specific argl_list
+
 void	ft_builtin_check(t_arg *arg, t_proc *proc)
 {
 	if (arg->len == 2 && !ft_strncmp(arg->str, "cd", arg->len))
@@ -43,7 +43,6 @@ void	ft_buitlin_pwd(t_proc *p)
 		}
 	}
 	aux = getcwd(NULL, 0);
-//	ft_putendl_fd(aux, fd);
 	printf("%s\n", aux);
 	free(aux);
 }
@@ -95,8 +94,7 @@ int	ft_builtin_unset_checker(char **env, char *unset)
 	free(temp);
 	return (-1);
 }
-// need to add exp and delete from export list as well
-char	**ft_builtin_unset(t_proc *p ,char **env)
+char	**ft_builtin_unset(t_proc *p ,char **env, t_env **exp)
 {	
 	char	**temp;
 	int		i;
@@ -105,7 +103,7 @@ char	**ft_builtin_unset(t_proc *p ,char **env)
 
 	check = ft_builtin_unset_checker(env, p->args[1]);
 	if (ft_check_arg_number(p->args, 2) == -1 || check == -1) //check this as we can do multiple unsets at once
-		return (env);
+		return (ft_search_export_unset(exp, p->args[1]), env);
 	j = 0;
 	i = 0;
 	temp = ft_calloc(sizeof(char *), ft_matrix_size(env));
@@ -121,21 +119,33 @@ char	**ft_builtin_unset(t_proc *p ,char **env)
 		}
 	}
 	ft_free_matrix(env);
-	return (temp);
+	return (ft_search_export_unset(exp, p->args[1]), temp);
 }
 
-void	ft_builtin_execute(t_proc *proc, char ***env, t_env **exp)
+void	ft_builtin_execute(t_proc *p, char ***env, t_env **exp)
 {	
-	if (!ft_strncmp(proc->args[0], "pwd", ft_strlen(proc->args[0])))
-		ft_buitlin_pwd(proc);
-	else if (!ft_strncmp(proc->args[0], "echo", ft_strlen(proc->args[0])))
-		ft_builtin_echo(proc);
-	else if (!ft_strncmp(proc->args[0], "env", ft_strlen(proc->args[0])))
-		ft_print_matrix(*env); 
-	else if (!ft_strncmp(proc->args[0], "unset", ft_strlen(proc->args[0])))
-		*env = ft_builtin_unset(proc, *env);
-	else if (!ft_strncmp(proc->args[0], "export", ft_strlen(proc->args[0])))
-		ft_builtin_export(proc, env, exp); //Need to add env 
+	int	arg_len;
+
+	arg_len = ft_strlen(p->args[0]);
+	if (!ft_strncmp(p->args[0], "pwd", ft_strlen(p->args[0])))
+	{
+		p->is_builtin = false;
+		ft_buitlin_pwd(p);
+	}
+	else if (!ft_strncmp(p->args[0], "echo", ft_strlen(p->args[0])))
+	{
+		p->is_builtin = false;
+		ft_builtin_echo(p);
+	}
+	else if (!ft_strncmp(p->args[0], "env", ft_strlen(p->args[0])))
+	{
+		p->is_builtin = false;
+		ft_print_matrix(*env);
+	}
+	else if (!ft_strncmp(p->args[0], "unset", ft_strlen(p->args[0])))
+		*env = ft_builtin_unset(p, *env, exp);
+	else if (!ft_strncmp(p->args[0], "export", ft_strlen(p->args[0])))
+		ft_builtin_export(p, env, exp); 
 	/*else if (!ft_strncmp(proc->args[0], "cd", ft_strlen(proc->args[0])))
 	ft_builtin_cd(t_proc *proc);
 	else if (!ft_strncmp(proc->args[0], "exit", ft_strlen(proc->args[0])))

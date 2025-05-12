@@ -6,20 +6,41 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 19:06:33 by aehrl             #+#    #+#             */
-/*   Updated: 2025/04/26 18:57:20 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/04/28 11:15:10 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-// step 1 figure out a alphabetized copy algorythm for the export
-//  --> For this it might be usefull to use the lists
-// --> when initializing the list add declare -x (honestly could just add this to a print function)
-// step 2 when I add to the export without a value it just adds to the export (without =) (in alphabetical order)
-// step 3 when I add a value to a name it adds it to the env (last item) and either updates or adds to the export
+void	ft_search_export_unset(t_env **exp, char *name)
+{
+	t_env	*aux;
+	t_env	*tmp;
 
 
-//figure out a way to set USER and then set 
+	aux = *exp;
+	tmp = aux->next;
+	while (aux)
+	{
+		if (tmp != NULL && ft_strncmp(aux->next->name, name, ft_strlen(name)) == 0)
+		{
+			if (tmp->next == NULL)
+				aux->next = NULL;
+			else
+			{
+				tmp = aux->next;
+				aux->next = tmp->next;
+			}
+			free(tmp->name);
+			if (tmp->content)
+				free(tmp->content);
+			free(tmp);
+			break ;
+		}
+		aux = aux->next; 
+	}
+}
+
 void	ft_search_export(t_env **exp, char	*name, char	*value)
 {
 	int		i;

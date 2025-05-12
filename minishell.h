@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/04/26 18:57:51 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/05/12 14:41:14 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ typedef struct s_ms
 
 typedef struct s_pipex
 {
-	int		iterator;
+	int		iter;
 	int		p_count;
 	int		cmd_count;
 	//int		**pipes;
@@ -91,9 +91,9 @@ typedef struct s_pipex
 	//pid_t	*pids;
 	pid_t	pids;
 	bool	here_doc;
-	//t_env	*all_paths;
+	t_env	**exp;
 	char	**all_paths;
-	char	**clean_paths;
+	char	*clean_path;
 	char	**cmd_args;
 	int		status;
 }	t_pipex;
@@ -178,6 +178,7 @@ void	ft_builtin_execute(t_proc *proc, char ***env, t_env **exp);
 t_env	*ft_create_export_lst(char **env);
 void	ft_print_export_lst(t_env **exp_lst);
 int		ft_builtin_unset_checker(char **env, char *unset);
+void	ft_search_export_unset(t_env **exp, char *name);
 void	ft_builtin_export(t_proc *p, char ***env, t_env **exp);
 
 // EXPORT UTILS
@@ -189,8 +190,14 @@ int 	ft_search_export_slipin(t_env **exp, char *name, char *value);
 int		ft_search_export_front(t_env **exp, char *name, char *value);
 
 // PIPEX IMPLEMENTATION
-int		ft_pipes(t_pipex *pipex, t_proc *p, char **env, t_env **exp);
-
+t_pipex	ft_init_pipex(t_proc *p, t_env **exp);
+int		ft_pipes(t_pipex *px, t_proc *p, char ***env, t_env **exp);
+char	*ft_get_path(char **envp, char *cmnd);
+//void	ft_first_process(t_pipex *px, t_proc *p, char ***env, t_env **exp);
+//void	ft_child_process(t_pipex *px, t_proc *p, char ***env, t_env **exp);
+//void	ft_last_process(t_pipex *px, t_proc *p, char ***env, t_env **exp);
+int		ft_set_infd(int pipein, int pipeout);
+void	ft_dup2(int input_fd, int output_fd);
 
 // UTILS
 void	ft_free_matrix(char **matrix);
@@ -198,4 +205,5 @@ int		ft_matrix_size(char **matrix);
 int		ft_check_arg_number(char **args, int expect);
 void	ft_print_matrix(char **matrix);
 void	ft_print_export_lst(t_env **exp_lst);
+void	ft_print_pipex(t_pipex *pipex);
 #endif

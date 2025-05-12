@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:29:31 by aehrl             #+#    #+#             */
-/*   Updated: 2025/04/10 16:11:15 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/04/28 09:53:50 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,34 +80,34 @@ t_env	*ft_create_export_lst(char **env)
 {
 	t_env	*env_lst;
 	t_env	*export_lst;
-	t_env	*new_node;
-	t_env	*env_aux;
+	t_env	*node;
+	t_env	*aux;
 	t_env	*exp_aux;
 	int		check;
 
 	env_lst = ft_get_export_lst(env);
-	env_aux = env_lst;
-	new_node = ft_new_env(env_aux->name, env_aux->content);
-	ft_add_env_back(&export_lst, new_node);
-	env_aux = env_aux->next;
-	while (env_aux)
+	aux = env_lst;
+	node = ft_new_env(ft_strdup(aux->name), ft_strdup(aux->content));
+	ft_add_env_back(&export_lst, node);
+	aux = aux->next;
+	while (aux)
 	{
 		exp_aux = export_lst;
-		new_node = ft_new_env(env_aux->name, env_aux->content);
-		check = ft_strncmp(new_node->name, exp_aux->name, ft_strlen(new_node->name)); // not sure if we should be looking at aux->name, or new_node_name
+		node = ft_new_env(ft_strdup(aux->name), ft_strdup(aux->content));
+		check = ft_strncmp(node->name, exp_aux->name, ft_strlen(node->name)); // not sure if we should be looking at aux->name, or node_name
 		if (check < 0)
-			ft_add_env_front(&export_lst, new_node);
+			ft_add_env_front(&export_lst, node);
 		else
 		{
 			while (check > 0 && exp_aux->next != NULL)
 			{
-				check = ft_strncmp(new_node->name, exp_aux->next->name, ft_strlen(new_node->name));
+				check = ft_strncmp(node->name, exp_aux->next->name, ft_strlen(node->name));
 				if (check > 0) 
 					exp_aux = exp_aux->next;
 			}
-			ft_slipin_node_env(exp_aux, new_node);
+			ft_slipin_node_env(exp_aux, node);
 		}
-		env_aux = env_aux->next;
+		aux = aux->next;
 	}
-	return (export_lst);
+	return (ft_free_env_list(&env_lst), export_lst); // change export setup to use strdup and them free env_lst
 }
