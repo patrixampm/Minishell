@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/12 19:40:14 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/05/13 14:44:10 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <stdbool.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <signal.h>
 
 # include "libft/libft.h"
 # include "libft/get_next_line.h"
@@ -97,6 +98,13 @@ typedef struct s_pipex
 	char	**cmd_args;
 	int		status;
 }	t_pipex;
+
+typedef struct s_info
+{
+    char   **env;
+    t_env   *exp;
+    int     prev_exit;
+}	t_info;
 
 // ARG LIST
 t_arg	*ft_new_arg(t_arg *arg_node);

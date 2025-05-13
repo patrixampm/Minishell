@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:55 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/13 14:32:38 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/05/13 14:51:23 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+int	g_signal_flag;
 
 static void	ft_free_ms(t_ms *ms)
 {
@@ -36,13 +38,13 @@ static void	ft_free_ms(t_ms *ms)
 	}
 } */
 
-void ft_excecute(t_proc *p, char ***env, t_env **exp)
+void ft_excecute(t_proc *p, t_info *info)
 {
 	t_pipex pipex;
 	t_proc	*aux;
 
 	aux = p;
-	pipex = ft_init_pipex(p, exp);
+	pipex = ft_init_pipex(p, &info->exp);
 	pipex.in = p->infd;
 	while(pipex.iter < pipex.p_count && aux != NULL) // check status
 	{
@@ -52,9 +54,9 @@ void ft_excecute(t_proc *p, char ***env, t_env **exp)
 			pipex.all_paths = ft_split(getenv("PATH"), ':');
 		pipex.out = p->outfd;
 		if (pipex.p_count == 1)
-			ft_solo_process(&pipex, p, env, exp);
+			ft_solo_process(&pipex, p, &info->env, &info->exp);
 		else
-			ft_pipes(&pipex, aux, env, exp);
+			ft_pipes(&pipex, aux, &info->env, &info->exp);
 		if (aux->next != NULL)
 		{
 			aux = aux->next;
@@ -69,7 +71,7 @@ void ft_excecute(t_proc *p, char ***env, t_env **exp)
 		pipex.iter++;
 	}
 }
-bool	ft_minishell(char *str, char ***env, t_env **exp)
+bool	ft_minishell(char *str, t_info *info)
 {
 	t_ms	*ms;
 
@@ -77,7 +79,7 @@ bool	ft_minishell(char *str, char ***env, t_env **exp)
 	ms->proc_lst = NULL;
 	if (ms == NULL)
 		return (false);
-	ms->env_lst = ft_get_env_lst(*env);
+	ms->env_lst = ft_get_env_lst(info->env);
 	if (ms->env_lst == NULL)
 		return (false);
 	ms->str = ft_strdup(str);
@@ -89,37 +91,79 @@ bool	ft_minishell(char *str, char ***env, t_env **exp)
 		return (ft_free_ms(ms), false);
 	//ft_print_arg_lst(&ms->arg_lst);
 	//ft_print_proc_lst(&ms->proc_lst);
-	//ft_builtin_execute(ms->proc_lst, env, exp);
-	ft_excecute(ms->proc_lst, env, exp);
+	//ft_builtin_execute(ms->proc_lst, info);
+	ft_excecute(ms->proc_lst, info);
 	return (ft_free_ms(ms), true);
 }
-	
-int	main(int ac, char **av, char **env)
+
+void    ft_handle_c(int sig)
 {
-	char	*str;
-	char 	**new_env;
-	t_env	*exp;
-	
+    (void)sig;
+    if (g_signal_flag == 0)
+    {
+        printf("\n");
+        rl_on_new_line();
+        rl_replace_line("", 0);
+        rl_redisplay();
+    }
+    else if (g_signal_flag == 1)
+    {
+        printf("\n");
+        rl_replace_line("", 0);
+    }
+    else if (g_signal_flag == 2)
+    {
+        printf("\n");
+        exit(130);
+    }
+    else if (g_signal_flag == 3)
+        printf("");
+    g_signal_flag = 0;
+}
+
+void    ft_init_info(t_info *info, char **env)
+{
 	if (*env)
-		exp = ft_create_export_lst(env);
-	new_env = ft_create_env(env, &exp);
-	(void)av;
-	//ft_print_export_lst(&exp);
-	if (ac == 1)
-	{
-		while (1)
-		{
-			str = readline("Minishell:>");
-			add_history(str);
-			if (!ft_strncmp(str, "EXIT", 5))
+        info->exp = ft_create_export_lst(env);
+    info->env = ft_create_env(env, &info->exp);
+    info->prev_exit = 0;
+}
+
+void	ft_free_info(t_info *info)
+{
+	ft_free_matrix(info->env);
+    ft_free_env_list(&info->exp);
+	free(info);
+}
+	
+int main(int ac, char **av, char **env)
+{
+    char    *str;
+    t_info  *info;
+
+    (void)av;
+	info = malloc(sizeof(t_info));
+    ft_init_info(info, env);
+    if (ac == 1)
+    {
+        while (1)
+        {
+            g_signal_flag = 0;
+            signal(SIGINT, ft_handle_c);
+            str = readline("Minishell:>");
+            if (str == NULL)
+			{
 				break ;
-			ft_minishell(str, &new_env, &exp);
-			free(str);
-		}
-	}
-	else
+                // ft_exit(info); // manage this exit depending on the level of the shell
+			}
+            add_history(str);
+            if (!ft_strncmp(str, "EXIT", 5))
+                break ;
+            ft_minishell(str, info);
+            free(str);
+        }
+    }
+    else
 		return (1);
-	ft_free_matrix(new_env);
-	ft_free_env_list(&exp);
-	return (free(str), 0);
+	return (ft_free_info(info), free(str), 0);
 }
