@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 15:11:38 by aehrl             #+#    #+#             */
-/*   Updated: 2025/05/08 13:05:29 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/05/12 19:16:49 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ char	*ft_get_path(char **envp, char *cmnd)
 {
 	int		i;
 	char	*path;
+	char	*aux;
 
 	i = 0;
 	if (!cmnd)
@@ -46,10 +47,12 @@ char	*ft_get_path(char **envp, char *cmnd)
 		return (cmnd);
 	while (envp[i])
 	{
-		path = ft_strjoin(ft_strjoin(envp[i], "/"), cmnd);
+		aux = ft_strjoin(envp[i], "/");
+		path = ft_strjoin(aux, cmnd);
 		if (access(path, X_OK) == 0)
 			return (path);
 		free(path);
+		free(aux);
 		i++;
 	}
 	return (NULL);
@@ -58,18 +61,20 @@ char	*ft_get_path(char **envp, char *cmnd)
 void	read_input_limiter(t_proc *p)
 {
 	char	*input;
-	int		fd;
 
-	fd = open("here_doc", O_RDWR, S_IRWXU);
+	p->infd = open("here_doc", O_RDWR | O_CREAT, S_IRWXU);
+	ft_putstr_fd("\nenter.... fd.... open", 2);
+	ft_putnbr_fd(p->infd, 2);
+	ft_putstr_fd("\n", 2);
 	while (1)
 	{
 		write(1, "here_doc> ", 10);
 		input = get_next_line(0);
-		if (input && ft_strlen(input) - 1 != ft_strlen(p->args[0]))
-			ft_putstr_fd(input, fd);
+		if (input && ft_strlen(input) - 1 != ft_strlen(p->infile))
+			ft_putstr_fd(input, p->infd);
 		else if (input
-			&& ft_strncmp(input, p->args[0], ft_strlen(p->args[0])) != 0)
-			ft_putstr_fd(input, fd);
+			&& ft_strncmp(input, p->infile, ft_strlen(p->infile)) != 0)
+			ft_putstr_fd(input, p->infd);
 		else
 			break ;
 		free(input);
@@ -80,35 +85,8 @@ void	read_input_limiter(t_proc *p)
 		exit(2);
 	}
 	free(input);
-	close(fd);
+	close(p->infd);
 }
-/* void	read_input_limiter(int i, char *argv[])
-{
-	char	*input;
-	int		fd;
-
-	fd = open(argv[i], O_RDWR, S_IRWXU);
-	while (1)
-	{
-		write(1, "here_doc> ", 10);
-		input = get_next_line(0);
-		if (input && ft_strlen(input) - 1 != ft_strlen(argv[i + 1]))
-			ft_putstr_fd(input, fd);
-		else if (input
-			&& ft_strncmp(input, argv[i + 1], ft_strlen(argv[i + 1])) != 0)
-			ft_putstr_fd(input, fd);
-		else
-			break ;
-		free(input);
-	}
-	if (!input)
-	{
-		unlink("here_doc");
-		exit(2);
-	}
-	free(input);
-	close(fd);
-} */
 
 void	del_heredoc(t_proc *p)
 {

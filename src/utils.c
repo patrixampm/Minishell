@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 17:26:13 by aehrl             #+#    #+#             */
-/*   Updated: 2025/05/12 14:36:20 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/05/12 19:48:24 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ t_pipex	ft_init_pipex(t_proc *p, t_env	**exp)
 	i = 0;
 	pipex.iter = 0;
 	pipex.p_count = ft_proc_lstsize(&p);
-	pipex.in = 0;
+	//pipex.in = p->infd;
 	pipex.out = 1;
 	/* while (i++ < pipex.p_count - 1)
 	{

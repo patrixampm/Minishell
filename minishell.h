@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/12 14:41:14 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/05/12 19:40:14 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ t_proc	*ft_proc(t_ms *ms);
 int		ft_proc_lstsize(t_proc **lst);
 
 // BUILT-IN FUNCTIONS
-void	ft_builtin_check(t_arg *arg, t_proc *proc);
+void	ft_builtin_check(t_proc *proc);
 void	ft_builtin_execute(t_proc *proc, char ***env, t_env **exp);
 t_env	*ft_create_export_lst(char **env);
 void	ft_print_export_lst(t_env **exp_lst);
@@ -198,6 +198,8 @@ char	*ft_get_path(char **envp, char *cmnd);
 //void	ft_last_process(t_pipex *px, t_proc *p, char ***env, t_env **exp);
 int		ft_set_infd(int pipein, int pipeout);
 void	ft_dup2(int input_fd, int output_fd);
+void	read_input_limiter(t_proc *p);
+void	ft_solo_process(t_pipex *px, t_proc *p, char ***env, t_env **exp);
 
 // UTILS
 void	ft_free_matrix(char **matrix);

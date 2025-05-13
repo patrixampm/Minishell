@@ -6,25 +6,27 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 12:28:18 by aehrl             #+#    #+#             */
-/*   Updated: 2025/04/30 17:49:58 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/05/12 19:57:15 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	ft_builtin_check(t_arg *arg, t_proc *proc)
-{
-	if (arg->len == 2 && !ft_strncmp(arg->str, "cd", arg->len))
+void	ft_builtin_check(t_proc *proc)
+{	
+	int len;
+	len = ft_strlen(proc->args[0]);
+	if (len == 2 && !ft_strncmp(proc->args[0], "cd", len))
 		proc->is_builtin = true;
-	else if (arg->len == 3 && (!ft_strncmp(arg->str, "env", arg->len)
-			|| !ft_strncmp(arg->str, "pwd", arg->len)))
+	else if (len == 3 && (!ft_strncmp(proc->args[0], "env", len)
+			|| !ft_strncmp(proc->args[0], "pwd", len)))
 		proc->is_builtin = true;
-	else if (arg->len == 4 && (!ft_strncmp(arg->str, "echo", arg->len)
-			|| !ft_strncmp(arg->str, "exit", arg->len)))
+	else if (len == 4 && (!ft_strncmp(proc->args[0], "echo", len)
+			|| !ft_strncmp(proc->args[0], "exit", len)))
 		proc->is_builtin = true;
-	else if (arg->len == 5 && !ft_strncmp(arg->str, "unset", arg->len))
+	else if (len == 5 && !ft_strncmp(proc->args[0], "unset", len))
 		proc->is_builtin = true;
-	else if (arg->len == 6 && !ft_strncmp(arg->str, "export", arg->len))
+	else if (len == 6 && !ft_strncmp(proc->args[0], "export", len))
 		proc->is_builtin = true;
 }
 
