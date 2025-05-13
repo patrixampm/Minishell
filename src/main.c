@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:55 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/13 14:51:23 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/13 20:38:29 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,19 +24,22 @@ static void	ft_free_ms(t_ms *ms)
 	free(ms);
 }
 
-/* void	ft_wait(t_pipex *pipex)
+void	ft_wait(t_pipex *px)
 {
 	int	i;
-	int	status;
 
 	i = 0;
-	while (i < (pipex->p_count))
+	printf("pid: %d\n", px->pids[i]);
+	while (i < (px->p_count))
 	{
-		if (waitpid(-1, &status, 0) == pipex->pids[pipex->cmd_count - 1])
-			pipex->status = WEXITSTATUS(status);
+		waitpid(px->pids[i], &px->status, 0);
+		if (WIFEXITED(px->status) && px->status != 0)
+			px->status = WEXITSTATUS(px->status);
+		if (WIFSIGNALED(px->status) && px->status != 0)
+			px->status = WTERMSIG(px->status);
 		i++;
 	}
-} */
+}
 
 void ft_excecute(t_proc *p, t_info *info)
 {
@@ -44,7 +47,7 @@ void ft_excecute(t_proc *p, t_info *info)
 	t_proc	*aux;
 
 	aux = p;
-	pipex = ft_init_pipex(p, &info->exp);
+	pipex = ft_init_pipex(p, info);
 	pipex.in = p->infd;
 	while(pipex.iter < pipex.p_count && aux != NULL) // check status
 	{
@@ -57,6 +60,7 @@ void ft_excecute(t_proc *p, t_info *info)
 			ft_solo_process(&pipex, p, &info->env, &info->exp);
 		else
 			ft_pipes(&pipex, aux, &info->env, &info->exp);
+		info->prev_exit = pipex.status;
 		if (aux->next != NULL)
 		{
 			aux = aux->next;
@@ -70,6 +74,8 @@ void ft_excecute(t_proc *p, t_info *info)
 			ft_putendl_fd(strerror(pipex.status), 2); // check these error messages
 		pipex.iter++;
 	}
+	ft_wait(&pipex);
+	free(pipex.pids);
 }
 bool	ft_minishell(char *str, t_info *info)
 {

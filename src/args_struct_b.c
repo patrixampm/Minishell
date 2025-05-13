@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 16:32:31 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/04/15 12:51:24 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/05/13 20:16:12 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	ft_get_type(char *str, char c, int *i)
 	if (str[*i] == 0)
 		return (type);
 	if (ft_isalpha(c) == 1 || c == '$' || c == '-'
-		|| c == '.' || c == '/' || c == '\\')
+		|| c == '.' || c == '/' || c == '\\' || ft_isdigit(c) == 1)
 		return (type = 0);
 	if (c == '\'')
 		return (type = 1);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/13 14:44:10 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/13 20:42:19 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,12 +85,11 @@ typedef struct s_pipex
 	int		iter;
 	int		p_count;
 	int		cmd_count;
-	//int		**pipes;
 	int		pipes[2];
 	int		in;
 	int		out;
-	//pid_t	*pids;
-	pid_t	pids;
+	pid_t	*pids;
+	//pid_t	pids;
 	bool	here_doc;
 	t_env	**exp;
 	char	**all_paths;
@@ -182,7 +181,7 @@ int		ft_proc_lstsize(t_proc **lst);
 
 // BUILT-IN FUNCTIONS
 void	ft_builtin_check(t_proc *proc);
-void	ft_builtin_execute(t_proc *proc, char ***env, t_env **exp);
+void	ft_builtin_execute(t_proc *proc, char ***env, t_env **exp, t_pipex *pipex);
 t_env	*ft_create_export_lst(char **env);
 void	ft_print_export_lst(t_env **exp_lst);
 int		ft_builtin_unset_checker(char **env, char *unset);
@@ -193,12 +192,13 @@ void	ft_builtin_export(t_proc *p, char ***env, t_env **exp);
 void	ft_slipin_node_env(t_env *a, t_env *b);
 void	ft_add_env_front(t_env **lst, t_env *new);
 void	ft_search_export(t_env **exp, char	*name, char	*value);
+void	ft_export_add_or_set(t_env **exp, char *arg, char ***env);
 char	**ft_env_add_or_set(char **env, int	i, char	*name, char	*value);
 int 	ft_search_export_slipin(t_env **exp, char *name, char *value);
 int		ft_search_export_front(t_env **exp, char *name, char *value);
 
 // PIPEX IMPLEMENTATION
-t_pipex	ft_init_pipex(t_proc *p, t_env **exp);
+t_pipex	ft_init_pipex(t_proc *p, t_info *info);
 int		ft_pipes(t_pipex *px, t_proc *p, char ***env, t_env **exp);
 char	*ft_get_path(char **envp, char *cmnd);
 //void	ft_first_process(t_pipex *px, t_proc *p, char ***env, t_env **exp);

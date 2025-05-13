@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 15:08:47 by aehrl             #+#    #+#             */
-/*   Updated: 2025/05/12 19:56:53 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/05/13 20:40:14 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,11 @@ void	ft_solo_process(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 	}
 	if (p->is_builtin == true)
 	{
-		ft_builtin_execute(p, env, exp);
+		ft_builtin_execute(p, env, exp, px);
 		return ;
 	}
-	px->pids = fork();
-	if (px->pids == 0)
+	px->pids[px->iter] = fork();
+	if (px->pids[px->iter] == 0)
 	{
 		px->out = p->outfd;
 		ft_handle_in(px, p);
@@ -91,12 +91,24 @@ void	ft_solo_process(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 			close(px->out);
 		}
 		px->clean_path = ft_get_path(px->all_paths, px->cmd_args[0]);
+		//printf("%s\n", px->clean_path);
+		if (px->clean_path == NULL )
+		{
+			if (execve(px->all_paths[0], px->cmd_args, *env) < 0)
+				exit(errno);
+			/* if (ft_isdigit(px->cmd_args[0]))
+				ft_putnbr_fd(px->status, 2);
+			errno = 127;
+			perror("Command no found");
+			exit(130); */
+
+		}
 		if (execve(px->clean_path, px->cmd_args, *env) < 0)
 			exit(errno);
 	}
-	waitpid(px->pids, &px->status, 0);
+	/* waitpid(px->pids[px->iter], &px->status, 0);
 	if (WIFEXITED(px->status) && px->status != 0)
-		px->status = WEXITSTATUS(px->status);
+		px->status = WEXITSTATUS(px->status); */
 }
 void	ft_first_process(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 {
@@ -107,10 +119,14 @@ void	ft_first_process(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 	close(px->in);
 	if (p->is_builtin == true)
 	{
-		ft_builtin_execute(p, &px->all_paths, exp);
+		ft_builtin_execute(p, env, exp, px);
 		exit(0);
 	}
 	px->clean_path = ft_get_path(px->all_paths, px->cmd_args[0]);
+	if (px->clean_path == NULL)
+	{
+		exit(127);
+	}
 	if (execve(px->clean_path, px->cmd_args, *env) < 0)
 		exit(errno);
 }
@@ -126,7 +142,7 @@ void	ft_child_process(t_pipex *px , t_proc *p, char ***env, t_env **exp)
 	close(px->pipes[0]);
 	if (p->is_builtin == true)
 	{
-		ft_builtin_execute(p, env, exp);
+			ft_builtin_execute(p, env, exp, px);
 		exit(0);
 	}
 	px->clean_path = ft_get_path(px->all_paths, px->cmd_args[0]);
@@ -145,10 +161,17 @@ void	ft_last_process(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 	}
 	if (p->is_builtin == true)
 	{
-		ft_builtin_execute(p, &px->all_paths, exp);
+		ft_builtin_execute(p, env, exp, px);
 		exit(0);
 	}
 	px->clean_path = ft_get_path(px->all_paths, px->cmd_args[0]);
+	if (px->clean_path == NULL)
+	{
+		if (execve("", px->cmd_args, *env) < 0)
+			exit(errno);
+		/* ft_putstr_fd()
+		px->cmd_args[0] */
+	}
 	if (execve(px->clean_path, px->cmd_args, *env) < 0)
 		exit(errno);
 }
@@ -157,10 +180,10 @@ int	ft_pipes(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 {
 	if (pipe(px->pipes) < 0)
 		return (perror("Error\n creating pipe"), -1); //check errno number
-	px->pids = fork();
-	if (px->pids < 0)
+	px->pids[px->iter] = fork();
+	if (px->pids[px->iter] < 0)
 		return (perror("Error\n forking process"), -1); //check errno number
-	if (px->pids == 0)
+	if (px->pids[px->iter] == 0)
 	{
 		if (px->iter == 0)
 			ft_first_process(px, p, env, exp);
@@ -171,9 +194,8 @@ int	ft_pipes(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 	}
 	if (px->iter != px->p_count - 1)
 		px->in = ft_set_infd(px->pipes[0], px->pipes[1]);
-	waitpid(px->pids, &px->status, 0);
-	if (WIFEXITED(px->status) && px->status != 0)
-		px->status = WEXITSTATUS(px->status);
+	if (ft_strncmp(p->args[0], "head", 4))
+		px->pids[px->iter] = -1;
 	unlink("here_doc");
-	return (px->status);
+	return (px->pids[px->iter]);
 }

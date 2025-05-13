@@ -6,23 +6,43 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 19:06:33 by aehrl             #+#    #+#             */
-/*   Updated: 2025/04/28 11:15:10 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/05/13 20:37:35 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+int	ft_search_export_unset_first(t_env **exp, char *name)
+{
+	t_env	*aux;
+	t_env	*tmp;
+
+	aux = *exp;
+	tmp = aux->next;
+	if (ft_strncmp(aux->name, name, ft_strlen(name)) == 0)
+	{
+		free(aux->name);
+		if (aux->content)
+			free(aux->content);
+		free(aux);
+		*exp = tmp;
+		return (1);
+	}
+	return (0);
+}
 
 void	ft_search_export_unset(t_env **exp, char *name)
 {
 	t_env	*aux;
 	t_env	*tmp;
 
-
 	aux = *exp;
 	tmp = aux->next;
-	while (aux)
+	if (ft_search_export_unset_first(exp, name) == 1)
+		return ;
+	while (aux->next != NULL)
 	{
-		if (tmp != NULL && ft_strncmp(aux->next->name, name, ft_strlen(name)) == 0)
+		if (ft_strncmp(aux->next->name, name, ft_strlen(name)) == 0)
 		{
 			if (tmp->next == NULL)
 				aux->next = NULL;

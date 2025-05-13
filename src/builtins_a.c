@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 12:28:18 by aehrl             #+#    #+#             */
-/*   Updated: 2025/05/12 19:57:15 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/05/13 20:36:56 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	ft_builtin_echo(t_proc *p)
 			j++;
 		if ((i == 1 && j < ft_strlen(p->args[i])) || p->args[1][0] != '-')
 			p->has_flags = false;
-		if (j != ft_strlen(p->args[i]))
+		if (j != ft_strlen(p->args[i])|| p->args[1][0] != '-')
 			break ;
 		i++;
 	}
@@ -96,22 +96,19 @@ int	ft_builtin_unset_checker(char **env, char *unset)
 	free(temp);
 	return (-1);
 }
-char	**ft_builtin_unset(t_proc *p ,char **env, t_env **exp)
-{	
+
+char	**ft_builtin_unset_env(char **env, int loc)
+{
 	char	**temp;
 	int		i;
-	int		check;
 	int		j;
 
-	check = ft_builtin_unset_checker(env, p->args[1]);
-	if (ft_check_arg_number(p->args, 2) == -1 || check == -1) //check this as we can do multiple unsets at once
-		return (ft_search_export_unset(exp, p->args[1]), env);
-	j = 0;
 	i = 0;
+	j = 0;
 	temp = ft_calloc(sizeof(char *), ft_matrix_size(env));
 	while (env[i])
 	{
-		if (i == check)
+		if (i == loc)
 			i++;
 		else if (env[i])
 		{
@@ -121,35 +118,48 @@ char	**ft_builtin_unset(t_proc *p ,char **env, t_env **exp)
 		}
 	}
 	ft_free_matrix(env);
-	return (ft_search_export_unset(exp, p->args[1]), temp);
+	return (temp);
 }
 
-void	ft_builtin_execute(t_proc *p, char ***env, t_env **exp)
+void	ft_builtin_unset(t_proc *p ,char ***env, t_env **exp)
+{	
+	int		i;
+	int		check;
+
+	i = 1;
+	while (p->args[i])
+	{
+		check = ft_builtin_unset_checker(*env, p->args[i]);
+		printf("check = %d\n", check);
+		if (check == -1)
+			ft_search_export_unset(exp, p->args[i]);
+		else
+		{
+			*env = ft_builtin_unset_env(*env, check);
+			ft_search_export_unset(exp, p->args[i]);
+		}
+		i++;
+	}
+}
+
+void	ft_builtin_execute(t_proc *p, char ***env, t_env **exp, t_pipex *pipex)
 {	
 	int	arg_len;
 
 	arg_len = ft_strlen(p->args[0]);
 	if (!ft_strncmp(p->args[0], "pwd", ft_strlen(p->args[0])))
-	{
-		p->is_builtin = false;
 		ft_buitlin_pwd(p);
-	}
 	else if (!ft_strncmp(p->args[0], "echo", ft_strlen(p->args[0])))
-	{
-		p->is_builtin = false;
 		ft_builtin_echo(p);
-	}
 	else if (!ft_strncmp(p->args[0], "env", ft_strlen(p->args[0])))
-	{
-		p->is_builtin = false;
 		ft_print_matrix(*env);
-	}
 	else if (!ft_strncmp(p->args[0], "unset", ft_strlen(p->args[0])))
-		*env = ft_builtin_unset(p, *env, exp);
+		ft_builtin_unset(p, env, exp);
 	else if (!ft_strncmp(p->args[0], "export", ft_strlen(p->args[0])))
 		ft_builtin_export(p, env, exp); 
-	/*else if (!ft_strncmp(proc->args[0], "cd", ft_strlen(proc->args[0])))
-	ft_builtin_cd(t_proc *proc);
+	(void)pipex;
+	/*else if (!ft_strncmp(p->args[0], "cd", ft_strlen(p->args[0])))
+		ft_builtin_cd(t_proc *p);
 	else if (!ft_strncmp(proc->args[0], "exit", ft_strlen(proc->args[0])))
 		ft_builtin_exit(t_proc *proc); */
 }
