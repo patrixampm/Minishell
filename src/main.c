@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:55 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/26 13:11:27 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/26 13:12:17 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,6 @@ int main(int ac, char **av, char **env)
             add_history(str);
             if (!ft_strncmp(str, "exit", ft_strlen(str)))
 			{
-				// must update previous exit status->don't know how
 				write(2, "exit\n", 5);
                 break ;
 			}
