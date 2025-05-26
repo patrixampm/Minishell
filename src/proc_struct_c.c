@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   proc_struct_c.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 17:13:28 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/12 19:39:31 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/05/22 13:29:42 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,12 @@ void	ft_word_type(t_arg *aux, t_arg *prev, t_proc *process, int *i)
 	}
 }
 
+void	ft_check_exit_expand(t_arg *arg, t_proc *process)
+{
+	if (arg->expand_exit == true)
+		process->expand_exit = true;
+}
+
 t_proc	*ft_create_proc(t_proc **proc_lst, t_ms *ms)
 {
 	t_arg	*aux;
@@ -97,10 +103,9 @@ t_proc	*ft_create_proc(t_proc **proc_lst, t_ms *ms)
 		if (aux->type == 7)
 			aux = aux->next;
 		ft_memset_cmds(aux, process);
-/* 		if (aux->job == 'C')
-			ft_builtin_check(aux, process); */
 		while (aux && aux->job != 'p')
 		{
+			ft_check_exit_expand(aux, process);
 			ft_word_type(aux, aux->prev, process, &i);
 			aux = aux->next;
 		}

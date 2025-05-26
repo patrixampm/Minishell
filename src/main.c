@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:55 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/13 14:51:23 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/26 12:46:52 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	g_signal_flag;
 static void	ft_free_ms(t_ms *ms)
 {
 	ft_free_arg_list(&ms->arg_lst);
-	ft_free_env_list(&ms->env_lst);
+	//ft_free_env_list(&ms->env_lst);
 	if (ms->proc_lst != NULL)
 		ft_free_proc_lst(&ms->proc_lst);
 	free(ms->str);
@@ -66,11 +66,18 @@ void ft_excecute(t_proc *p, t_info *info)
 			ft_free_matrix(pipex.all_paths);
 		if (pipex.clean_path) 
 			free(pipex.clean_path);
-		if (pipex.status != 0)
-			ft_putendl_fd(strerror(pipex.status), 2); // check these error messages
+		//if (pipex.status != 0)
+			//ft_putendl_fd(strerror(pipex.status), 2); // check these error messages
 		pipex.iter++;
 	}
+	if (p->exit_status != 0)
+		info->prev_exit = p->exit_status;
+	if (pipex.status != 0)
+		info->prev_exit = pipex.status;
+	else
+		info->prev_exit = 0;
 }
+
 bool	ft_minishell(char *str, t_info *info)
 {
 	t_ms	*ms;
@@ -79,14 +86,11 @@ bool	ft_minishell(char *str, t_info *info)
 	ms->proc_lst = NULL;
 	if (ms == NULL)
 		return (false);
-	ms->env_lst = ft_get_env_lst(info->env);
-	if (ms->env_lst == NULL)
-		return (false);
 	ms->str = ft_strdup(str);
-	ms->arg_lst = ft_arg_lst(str, ms->env_lst);
+	ms->arg_lst = ft_arg_lst(str, info);
 	if (ms->arg_lst == NULL)
 		return (ft_free_ms(ms), false);
-	ms->proc_lst = ft_proc(ms);
+	ms->proc_lst = ft_proc(ms, info);
 	if (ms->proc_lst == NULL)
 		return (ft_free_ms(ms), false);
 	//ft_print_arg_lst(&ms->arg_lst);
@@ -123,9 +127,19 @@ void    ft_handle_c(int sig)
 
 void    ft_init_info(t_info *info, char **env)
 {
+	t_env	*exp;
+	char	*lvl;
+
+	exp = NULL;
 	if (*env)
-        info->exp = ft_create_export_lst(env);
+        info->exp = ft_create_export_lst(env, exp);
     info->env = ft_create_env(env, &info->exp);
+	info->shlvl = atoi(ft_get_exp_content(info->exp, "SHLVL")) + 1;
+	lvl = ft_itoa(info->shlvl);
+	ft_search_export(&info->exp, "SHLVL", lvl);
+	ft_env_add_or_set(info->env, ft_builtin_unset_checker(info->env, "SHLVL"),
+	"SHLVL", lvl);
+	free(lvl);
     info->prev_exit = 0;
 }
 
@@ -153,14 +167,19 @@ int main(int ac, char **av, char **env)
             str = readline("Minishell:>");
             if (str == NULL)
 			{
+				write(2, "exit\n", 5);
 				break ;
-                // ft_exit(info); // manage this exit depending on the level of the shell
 			}
             add_history(str);
-            if (!ft_strncmp(str, "EXIT", 5))
+            if (!ft_strncmp(str, "exit", ft_strlen(str)))
+			{
+				// must update previous exit status->don't know how
+				write(2, "exit\n", 5);
                 break ;
+			}
             ft_minishell(str, info);
             free(str);
+			printf("exit status: %d\n", info->prev_exit);
         }
     }
     else

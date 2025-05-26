@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_b.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 19:06:33 by aehrl             #+#    #+#             */
-/*   Updated: 2025/04/28 11:15:10 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/05/22 12:02:47 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ void	ft_export_add_or_set(t_env **exp, char *arg, char ***env)
 	free(new_arg);
 }
 
-void	ft_builtin_export(t_proc *p, char ***env, t_env **exp)
+void	ft_builtin_export(t_proc *p, char ***env, t_env **exp, t_pipex *px)
 {
 	int		i;
 	int		size;
@@ -143,10 +143,16 @@ void	ft_builtin_export(t_proc *p, char ***env, t_env **exp)
 		if (p->args[i][0] == '-')
 		{
 			if (i == 1)
+			{
+				px->status = 2;
 				printf("export: \'-%c\'\n: invalid option", p->args[i][1]);
+			}
 			else
+			{
+				px->status = 1;
 				printf("export: \'%s\'\n: not a valid identifier", p->args[i]);
-			return ; //set errno and break process
+			}
+			return ;
 		}
 		ft_export_add_or_set(exp, p->args[i], env);
 		i++;

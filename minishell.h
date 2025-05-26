@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/13 14:44:10 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/26 11:19:25 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <errno.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <aio.h>
 # include <string.h>
 # include <stdio.h>
@@ -69,6 +70,7 @@ typedef struct s_proc
 	bool			has_flags;
 	int				exit_status;
 	bool			is_builtin;
+	bool			expand_exit;
 	struct s_proc	*next;
 }	t_proc;
 
@@ -103,6 +105,7 @@ typedef struct s_info
 {
     char   **env;
     t_env   *exp;
+	int		shlvl;
     int     prev_exit;
 }	t_info;
 
@@ -138,7 +141,7 @@ char	**ft_create_env(char **env, t_env **export);
 void	ft_free_node_n_list(t_arg **lst, t_arg *node);
 void	ft_print_arg_lst(t_arg **arg_lst); //
 int		ft_get_type(char *str, char c, int *i);
-bool	ft_qt(char *str, int *i, t_arg *node, t_env *env);
+bool	ft_qt(char *str, int *i, t_arg *node, t_info *info);
 void	ft_simple_qt(char *str, int *i, t_arg *arg_node);
 void	ft_end_here(t_arg *node, int *i, int k);
 void	ft_reset_str_temp(t_arg *arg_node);
@@ -147,28 +150,32 @@ int		ft_pre_n_exp1(char *s, t_arg *node, int *i, int j);
 int		ft_pre_n_exp2(char *s, t_arg *node, int *i, int j);
 void	ft_iter_k(char *s, int *i, int *k);
 void	ft_check_n_iter(char *s, int *i, int j, int *k);
+int		ft_check_post(t_arg *node, t_info *info, int j);
 void	ft_compose_temp1(t_arg *node, char *s, int *i, int j);
 void	ft_compose_temp2(t_arg *node, char *s, int *i, int j);
 bool	ft_check_closure(char *str, int *i, t_arg *node);
 bool	ft_check_qt_closure(char *str, int k);
-void	ft_double_qt(char *str, int *i, t_arg *arg_node, t_env *env_lst);
-void	ft_no_qt(char *str, int *i, t_arg *node, t_env *env_lst);
+void	ft_double_qt(char *str, int *i, t_arg *arg_node, t_info *info);
+void	ft_no_qt(char *str, int *i, t_arg *node, t_info *info);
 void	ft_expand_str(t_arg *arg_node);
 void	ft_form_str(t_arg *arg_node);
 bool	ft_set_simple_str(t_arg *node, char *str, int *i, int len);
-bool	ft_set_alt_str(char *s, int *i, t_arg *arg_node, t_env *env_lst);
-bool	ft_set_arg_str(t_arg *arg_node, char *str, int *i, t_env *env_lst);
-int		ft_create_arg_lst(char *str, t_arg **arg_lst, t_env *env_lst);
-t_arg	*ft_arg_lst(char *str, t_env *env_lst);
+bool	ft_set_alt_str(char *s, int *i, t_arg *arg_node, t_info *info);
+bool	ft_set_arg_str(t_arg *arg_node, char *str, int *i, t_info *info);
+int		ft_create_arg_lst(char *str, t_arg **arg_lst, t_info *info);
+t_arg	*ft_arg_lst(char *str, t_info *info);
 
 // ENV EXPAND
 void	ft_reset_expand_s(t_arg *arg_node);
 void	ft_reset_expand_s2(t_arg *arg_node);
 void	ft_reset_expand_b(t_arg *arg_node);
-void	ft_check_expand(t_arg *nd, t_env *env_lst);
+void	ft_check_expand(t_arg *nd, t_info *info);
+char	*ft_check_expand2(char *exp, t_info *info, bool valid);
+char	*ft_check_expand3(t_env *exp, char *input);
 
 // PROCESS STRUCT
 void	ft_print_proc_lst(t_proc **proc_lst);
+void	ft_check_exit_expand(t_arg *arg, t_proc *process);
 void	ft_memset_cmds(t_arg *head, t_proc *process);
 void	ft_give_job(t_arg *node);
 void	ft_arg_jobs(t_ms *ms);
@@ -176,24 +183,29 @@ void	ft_prev_type_3to5(t_arg *aux, t_proc *process);
 void	ft_prev_type_6or7(t_arg *aux, t_proc *process, int *i);
 void	ft_word_type(t_arg *aux, t_arg *prev, t_proc *process, int *i);
 t_proc	*ft_create_proc(t_proc **proc_lst, t_ms *ms);
-bool	ft_check_syntax_errors(t_arg *lst);
-t_proc	*ft_proc(t_ms *ms);
+bool	ft_check_syntax_errors(t_arg *lst, t_info *info);
+t_proc	*ft_proc(t_ms *ms, t_info *info);
 int		ft_proc_lstsize(t_proc **lst);
 
 // BUILT-IN FUNCTIONS
+void	ft_buitlin_pwd(t_proc *p, t_pipex *px);
 void	ft_builtin_check(t_proc *proc);
-void	ft_builtin_execute(t_proc *proc, char ***env, t_env **exp);
-t_env	*ft_create_export_lst(char **env);
+void	ft_builtin_execute(t_proc *proc, char ***env, t_env **exp, t_pipex *px);
+t_env	*ft_create_export_lst(char **env, t_env *export_lst);
 void	ft_print_export_lst(t_env **exp_lst);
 int		ft_builtin_unset_checker(char **env, char *unset);
 void	ft_search_export_unset(t_env **exp, char *name);
-void	ft_builtin_export(t_proc *p, char ***env, t_env **exp);
+void	ft_builtin_export(t_proc *p, char ***env, t_env **exp, t_pipex *px);
+void	ft_only_cd(t_env *exp, char **env, t_pipex *px, char *pwd);
+void	ft_builtin_cd(t_proc *p, char ***env, t_env **exp, t_pipex *px);
+void	ft_builtin_exit(t_proc *p, t_pipex *px);
 
 // EXPORT UTILS
 void	ft_slipin_node_env(t_env *a, t_env *b);
 void	ft_add_env_front(t_env **lst, t_env *new);
 void	ft_search_export(t_env **exp, char	*name, char	*value);
 char	**ft_env_add_or_set(char **env, int	i, char	*name, char	*value);
+void	ft_export_add_or_set(t_env **exp, char *arg, char ***env);
 int 	ft_search_export_slipin(t_env **exp, char *name, char *value);
 int		ft_search_export_front(t_env **exp, char *name, char *value);
 
@@ -206,14 +218,24 @@ char	*ft_get_path(char **envp, char *cmnd);
 //void	ft_last_process(t_pipex *px, t_proc *p, char ***env, t_env **exp);
 int		ft_set_infd(int pipein, int pipeout);
 void	ft_dup2(int input_fd, int output_fd);
-void	read_input_limiter(t_proc *p);
+void	read_input_limiter(t_proc *p, t_env *exp);
 void	ft_solo_process(t_pipex *px, t_proc *p, char ***env, t_env **exp);
 
 // UTILS
+void	ft_printerr(char *str, char *arg, int errnum, t_pipex *px);
 void	ft_free_matrix(char **matrix);
 int		ft_matrix_size(char **matrix);
 int		ft_check_arg_number(char **args, int expect);
 void	ft_print_matrix(char **matrix);
 void	ft_print_export_lst(t_env **exp_lst);
 void	ft_print_pipex(t_pipex *pipex);
+
+// SEARCH FUNCTIONS
+char	*ft_get_exp_content(t_env *exp, char *name);
+bool	ft_strnstr_ms(const char *haystack, const char *needle, size_t len);
+bool	ft_search_env(char **env, char *var, char *content);
+char	*ft_search_env_2(char **env, char *var);
+void	ft_print_dup2err(t_pipex *px);
+void	ft_print_execve_err(t_pipex *px, char *arg);
+
 #endif

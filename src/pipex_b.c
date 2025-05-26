@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_b.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 15:11:38 by aehrl             #+#    #+#             */
-/*   Updated: 2025/05/12 19:16:49 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/05/22 12:24:11 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ char	*ft_get_path(char **envp, char *cmnd)
 	return (NULL);
 }
 
-void	read_input_limiter(t_proc *p)
+void	read_input_limiter(t_proc *p, t_env *exp)
 {
 	char	*input;
 
@@ -70,6 +70,7 @@ void	read_input_limiter(t_proc *p)
 	{
 		write(1, "here_doc> ", 10);
 		input = get_next_line(0);
+		input = ft_check_expand3(exp, input);
 		if (input && ft_strlen(input) - 1 != ft_strlen(p->infile))
 			ft_putstr_fd(input, p->infd);
 		else if (input
@@ -82,7 +83,8 @@ void	read_input_limiter(t_proc *p)
 	if (!input)
 	{
 		unlink("here_doc");
-		exit(2);
+		p->exit_status = 2;
+		return ;
 	}
 	free(input);
 	close(p->infd);

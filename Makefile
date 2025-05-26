@@ -23,11 +23,11 @@ RED		= \033[31;1m
 
 SHARED_FILES = arg_list args_struct_a \
 				args_struct_b args_struct_c \
-				args_struct_d args_struct_e \
-				env_list env_struct expand closures \
+				args_struct_d args_struct_e args_struct_f \
+				env_list env_struct expand_a expand_b closures \
 				proc_list proc_struct_a proc_struct_b proc_struct_c \
-				export_list builtins_a builtins_b builtins_c utils \
-				pipex_a pipex_b prints\
+				export_list builtins_a builtins_b builtins_c builtins_d \
+				pipex_a pipex_b prints utils new_search_funcs
 
 SRC_FILES = main $(SHARED_FILES)
 BONUS_FILES = main_bonus

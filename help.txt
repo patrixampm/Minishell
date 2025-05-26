@@ -18,7 +18,7 @@ ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo "$USER"
 ppeckham
 ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo "$USER$USER"
 ppeckhamppeckham
-ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo "$USERa$USER"
+ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo "$USERa$USER" **
 ppeckham
 ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo "$USER'a'$USER"
 ppeckham'a'ppeckham
@@ -30,16 +30,18 @@ aunqueexpand
 ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo $expand aun"que"juju$no'expand'
 aunquejujuexpand
 
+echo a"b"c$no'd'  n
+
 echo \t joke
 t joke
 echo \n joke
 n joke
 
 "abc '$USER' cba"
-Make'file'|"" $US'ER'""""
+Make'file'|"" $US'ER'"""" **
 "$USER"' ' ho"la"'que'' ''as"e"'
 
-$PA$PATH
+$PA$PATH **
 a"$PAT"
 a$PATH"$a"
 $PATH$
@@ -48,6 +50,17 @@ $PATH$
 hi >> phillippa $USER | "how are you"
 'abc '$USER' cba' because ' cba' is lost
 
+shit new problems ahhhhhrggg:
+Minishell:>echo "$USER $$USER"
+$$
+Minishell:>echo "$$USER   hola"
+$$
+Minishell:>echo "$USER $USER"
+ppeckhamppeckham
+Minishell:>echo "$USER                       $USER"
+$USER                       ppeckham  este encima me genera un leak en el post
+
+echo "$USER hola  $USER"
 
 /*
 JOBS:

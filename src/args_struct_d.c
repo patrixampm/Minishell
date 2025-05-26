@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 17:30:02 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/11 15:08:19 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/20 17:32:57 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,18 @@ void	ft_simple_qt(char *str, int *i, t_arg *node)
 void	ft_end_here(t_arg *node, int *i, int k)
 {
 	ft_expand_str(node);
-	*i = k - 1;
+	if (node->temp && ft_strncmp("$$", node->temp, ft_strlen(node->temp)) == 0)
+	{
+		free(node->temp);
+		node->temp = NULL;
+		*i = k;
+	}
+	else
+		*i = k - 1;
 	return ;
 }
 
-void	ft_double_qt(char *s, int *i, t_arg *node, t_env *env_lst)
+void	ft_double_qt(char *s, int *i, t_arg *node, t_info *info)
 {
 	int		j;
 	int		k;
@@ -41,7 +48,7 @@ void	ft_double_qt(char *s, int *i, t_arg *node, t_env *env_lst)
 		if (s[j] == '$')
 		{
 			k = ft_pre_n_exp1(s, node, i, j);
-			ft_check_expand(node, env_lst);
+			ft_check_expand(node, info);
 			if (s[k] == '$' || (s[k] == '\'' && ft_check_qt_closure(s, k)))
 				return (ft_end_here(node, i, k));
 			j = k;
@@ -50,6 +57,7 @@ void	ft_double_qt(char *s, int *i, t_arg *node, t_env *env_lst)
 				return (ft_end_here(node, i, k));
 			ft_iter_k(s, i, &k);
 			node->post = ft_substr(s, j, k - j);
+			j = ft_check_post(node, info, j);
 			if (s[j] == s[*i])
 				break ;
 		}
@@ -67,7 +75,7 @@ static bool	ft_is_char(char c)
 		return (false);
 }
 
-void	ft_no_qt(char *s, int *i, t_arg *node, t_env *env_lst)
+void	ft_no_qt(char *s, int *i, t_arg *node, t_info *info)
 {
 	int			j;
 	int			k;
@@ -79,7 +87,7 @@ void	ft_no_qt(char *s, int *i, t_arg *node, t_env *env_lst)
 		if (s[j] == '$')
 		{
 			k = ft_pre_n_exp2(s, node, i, j);
-			ft_check_expand(node, env_lst);
+			ft_check_expand(node, info);
 			if (ft_is_char(s[k]))
 				return (ft_end_here(node, i, k));
 			else if (s[k] && (s[k] == '\'' || s[k] == '"'))

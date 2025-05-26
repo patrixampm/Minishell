@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expand.c                                           :+:      :+:    :+:   */
+/*   expand_a.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 13:48:15 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/03 12:36:43 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/21 17:56:35 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,11 @@ void	ft_reset_expand_s2(t_arg *arg_node)
 		arg_node->post = NULL;
 }
 
-void	ft_check_expand(t_arg *nd, t_env *env_lst)
+void	ft_check_expand(t_arg *nd, t_info *info)
 {
 	t_env	*a;
 
-	a = env_lst;
+	a = info->exp;
 	while (a)
 	{
 		if (ft_strncmp(nd->exp, a->name, ft_strlen(a->name)) == 0
@@ -57,10 +57,40 @@ void	ft_check_expand(t_arg *nd, t_env *env_lst)
 	}
 	if (!nd->valid_expand)
 	{
-		if (ft_strncmp("$", nd->exp, ft_strlen(nd->exp)) == 0
-			|| ft_strncmp("$?", nd->exp, ft_strlen(nd->exp)) == 0)
+		if (ft_strncmp("$", nd->exp, ft_strlen(nd->exp)) == 0 ||
+			ft_strncmp("$$", nd->exp, ft_strlen(nd->exp)) == 0)
 			return ;
+		if (ft_strncmp("$?", nd->exp, ft_strlen(nd->exp)) == 0)
+			(free(nd->exp), nd->exp = ft_itoa(info->prev_exit));
 		else
 			(free(nd->exp), nd->exp = NULL);
 	}
+}
+
+char	*ft_check_expand2(char *exp, t_info *info, bool valid)
+{
+	t_env	*a;
+
+	a = info->exp;
+	while (a)
+	{
+		if (ft_strncmp(exp, a->name, ft_strlen(a->name)) == 0
+			&& ft_strlen(exp) != 0
+			&& ft_strlen(a->name) == ft_strlen(exp))
+		{
+			valid = true;
+			(free(exp), exp = ft_strdup(a->content));
+		}
+		a = a->next;
+	}
+	if (!valid)
+	{
+		if (ft_strncmp("$", exp, ft_strlen(exp)) == 0)
+			return (exp);
+		if (ft_strncmp("$?", exp, ft_strlen(exp)) == 0)
+			(free(exp), exp = ft_itoa(info->prev_exit));
+		else
+			(free(exp), exp = NULL);
+	}
+	return (exp);
 }

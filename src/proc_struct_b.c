@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 11:12:33 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/11 15:05:27 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/22 12:14:51 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static void	ft_print_err(int n, t_arg *a)
 	}
 }
 
-bool	ft_check_syntax_errors(t_arg *lst)
+bool	ft_check_syntax_errors(t_arg *lst, t_info *info)
 {
 	t_arg	*a;
 	t_arg	*prev;
@@ -40,15 +40,15 @@ bool	ft_check_syntax_errors(t_arg *lst)
 		prev = a->prev;
 		next = a->next;
 		if (a->job == 'p' && (prev == NULL || next == NULL))
-			return (ft_print_err(1, a), false);
+			return (info->prev_exit = 2, ft_print_err(1, a), false);
 		else if (a->job == 'p' && (prev->type > 2 || next->type == 7))
-			return (ft_print_err(2, a), false);
+			return (info->prev_exit = 2, ft_print_err(2, a), false);
 		else if (next == NULL && (a->type > 2 && a->type < 7))
-			return (ft_print_err(3, a), false);
+			return (info->prev_exit = 2, ft_print_err(3, a), false);
 		else if (prev && (a->type > 2 && a->type < 7)
 			&& ((prev->type > 2 && prev->type < 7)
 				|| (next->type > 2 && next->type <= 7)))
-			return (ft_print_err(4, a), false);
+			return (info->prev_exit = 2, ft_print_err(4, a), false);
 		a = a->next;
 	}
 	return (true);

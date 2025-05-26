@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_a.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 15:08:47 by aehrl             #+#    #+#             */
-/*   Updated: 2025/05/12 19:56:53 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/05/26 12:54:35 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,24 +27,28 @@
 		close(pipex->pipes[pipex->iter][0]);
 	}
 } */
-void	ft_handle_in(t_pipex *pipex, t_proc *proc)
+
+void	ft_handle_in(t_pipex *pipex, t_proc *proc, t_env *exp)
 {
 	if (proc->hd == true)
 	{
-		read_input_limiter(proc);
+		read_input_limiter(proc, exp);
+		if (proc->exit_status == 2)
+			return ;
 		proc->infd = open("here_doc", O_RDWR , S_IRWXU);
 		if (dup2(proc->infd, STDIN_FILENO) < 0)
-			exit(errno);
+			ft_print_dup2err(pipex);
 	}
 	else if (pipex->in != STDIN_FILENO)
 	{ 
 		if (proc->infd != STDIN_FILENO)
 			pipex->in = proc->infd;
 		if (dup2(pipex->in, STDIN_FILENO) < 0)
-			exit(errno);
+			ft_print_dup2err(pipex);
 		close(pipex->in);
 	}
 }
+
 void	ft_handle_out(t_pipex *pipex, t_proc *proc)
 {
 	if (proc->outfd != STDOUT_FILENO)
@@ -55,7 +59,7 @@ void	ft_handle_out(t_pipex *pipex, t_proc *proc)
 	if (pipex->out != STDIN_FILENO)
 	{ 
 		if (dup2(pipex->out, STDIN_FILENO) < 0)
-			exit(errno);
+			ft_print_dup2err(pipex);
 		close(pipex->out);
 	}
 	/* px->out = p->outfd;
@@ -70,73 +74,79 @@ void	ft_solo_process(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 {
 	if (p->hd == true && p->is_builtin == true)
 	{
-		read_input_limiter(p);
+		read_input_limiter(p, *exp);
+		if (p->exit_status == 2)
+			return ;
 		p->infd = open("here_doc", O_RDWR , S_IRWXU);
 	}
 	if (p->is_builtin == true)
 	{
-		ft_builtin_execute(p, env, exp);
+		ft_builtin_execute(p, env, exp, px);
 		return ;
 	}
 	px->pids = fork();
 	if (px->pids == 0)
 	{
 		px->out = p->outfd;
-		ft_handle_in(px, p);
+		ft_handle_in(px, p, *exp);
 		if (px->out != STDOUT_FILENO)
 		{
 			ft_putstr_fd("\nenter\n", 2);
 			if (dup2(px->out, STDOUT_FILENO) < 0)
-				exit(errno);
+				ft_print_dup2err(px);
 			close(px->out);
 		}
 		px->clean_path = ft_get_path(px->all_paths, px->cmd_args[0]);
 		if (execve(px->clean_path, px->cmd_args, *env) < 0)
-			exit(errno);
+			ft_print_execve_err(px, p->args[0]);
 	}
 	waitpid(px->pids, &px->status, 0);
 	if (WIFEXITED(px->status) && px->status != 0)
 		px->status = WEXITSTATUS(px->status);
+	else
+		px->status = 0;
+	printf("px-exit status: %d\n", px->status);
 }
+
 void	ft_first_process(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 {
- 	ft_handle_in(px, p);
-	dup2(px->pipes[1], STDOUT_FILENO);
+ 	ft_handle_in(px, p, *exp);
+	dup2(px->pipes[1], STDOUT_FILENO); // should error handling be added here?
 	if (px->out != STDOUT_FILENO)
 		close(px->out);
 	close(px->in);
 	if (p->is_builtin == true)
 	{
-		ft_builtin_execute(p, &px->all_paths, exp);
-		exit(0);
+		ft_builtin_execute(p, &px->all_paths, exp, px);
+		return ;
 	}
 	px->clean_path = ft_get_path(px->all_paths, px->cmd_args[0]);
 	if (execve(px->clean_path, px->cmd_args, *env) < 0)
-		exit(errno);
+		ft_print_execve_err(px, p->args[0]);
 }
 
 void	ft_child_process(t_pipex *px , t_proc *p, char ***env, t_env **exp)
 {
-	ft_handle_in(px, p);
+	ft_handle_in(px, p, *exp);
 	if (px->pipes[1]!= STDOUT_FILENO)
 	{
-		dup2(px->pipes[1], STDOUT_FILENO);
+		dup2(px->pipes[1], STDOUT_FILENO); // error handling?
 		close(px->pipes[1]);
 	}	
 	close(px->pipes[0]);
 	if (p->is_builtin == true)
 	{
-		ft_builtin_execute(p, env, exp);
-		exit(0);
+		ft_builtin_execute(p, env, exp, px);
+		return ;
 	}
 	px->clean_path = ft_get_path(px->all_paths, px->cmd_args[0]);
 	if (execve(px->clean_path, px->cmd_args, *env) < 0)
-		exit(errno);
+		ft_print_execve_err(px, p->args[0]);
 }
 
 void	ft_last_process(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 {
-	ft_handle_in(px, p);
+	ft_handle_in(px, p, *exp);
 	close(px->in);
 	if (px->out != STDOUT_FILENO)
 	{
@@ -145,21 +155,21 @@ void	ft_last_process(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 	}
 	if (p->is_builtin == true)
 	{
-		ft_builtin_execute(p, &px->all_paths, exp);
-		exit(0);
+		ft_builtin_execute(p, &px->all_paths, exp, px);
+		return ;
 	}
 	px->clean_path = ft_get_path(px->all_paths, px->cmd_args[0]);
 	if (execve(px->clean_path, px->cmd_args, *env) < 0)
-		exit(errno);
+		ft_print_execve_err(px, p->args[0]);
 }
 
 int	ft_pipes(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 {
 	if (pipe(px->pipes) < 0)
-		return (perror("Error\n creating pipe"), -1); //check errno number
+		return (ft_printerr("Error\n creating pipe", NULL, 1, px), -1);
 	px->pids = fork();
 	if (px->pids < 0)
-		return (perror("Error\n forking process"), -1); //check errno number
+		return (ft_printerr("Error\n forking process", NULL, 1, px), -1);
 	if (px->pids == 0)
 	{
 		if (px->iter == 0)
@@ -174,6 +184,8 @@ int	ft_pipes(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 	waitpid(px->pids, &px->status, 0);
 	if (WIFEXITED(px->status) && px->status != 0)
 		px->status = WEXITSTATUS(px->status);
+	else
+		px->status = 0;
 	unlink("here_doc");
 	return (px->status);
 }

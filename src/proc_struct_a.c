@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   proc_struct_a.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 14:21:29 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/12 13:54:37 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/05/22 12:13:24 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,18 +105,19 @@ void	ft_print_proc_lst(t_proc **proc_lst)
 		printf("has_flags?: %d\n", aux->has_flags);
 		printf("exit_status: %d\n", aux->exit_status);
 		printf("is_built-in: %d\n", aux->is_builtin);
+		printf("expand_exit: %d\n", aux->expand_exit);
 		printf("--------------------------------------\n");
 		aux = aux->next;
 	}
 }
 
-t_proc	*ft_proc(t_ms *ms)
+t_proc	*ft_proc(t_ms *ms, t_info *info)
 {
 	t_proc	*proc_lst;
 
 	proc_lst = NULL;
 	ft_arg_jobs(ms);
-	if (!ft_check_syntax_errors(ms->arg_lst))
+	if (!ft_check_syntax_errors(ms->arg_lst, info))
 		return (NULL);
 	proc_lst = ft_create_proc(&proc_lst, ms);
 	if (proc_lst == NULL)
