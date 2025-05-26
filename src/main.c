@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:55 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/26 12:46:52 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/26 13:11:27 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,6 @@ int main(int ac, char **av, char **env)
 			}
             ft_minishell(str, info);
             free(str);
-			printf("exit status: %d\n", info->prev_exit);
         }
     }
     else

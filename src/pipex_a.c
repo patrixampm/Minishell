@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 15:08:47 by aehrl             #+#    #+#             */
-/*   Updated: 2025/05/26 12:54:35 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/26 13:11:00 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,6 @@ void	ft_solo_process(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 		px->status = WEXITSTATUS(px->status);
 	else
 		px->status = 0;
-	printf("px-exit status: %d\n", px->status);
 }
 
 void	ft_first_process(t_pipex *px, t_proc *p, char ***env, t_env **exp)
