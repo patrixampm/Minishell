@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 14:21:29 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/22 12:13:24 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/27 15:55:53 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ void	ft_print_proc_lst(t_proc **proc_lst)
 		printf("infile: %s infd: %d\n", aux->infile, aux->infd);
 		printf("outfile: %s outfd: %d\n", aux->outfile, aux->outfd);
 		printf("append?: %d\n", aux->append);
+		printf("delimiter: %s\n", aux->delimiter);
 		printf("hd?: %d\n", aux->hd);
 		printf("has_flags?: %d\n", aux->has_flags);
 		printf("exit_status: %d\n", aux->exit_status);

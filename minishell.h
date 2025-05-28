@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/26 11:19:25 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/27 17:41:11 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ typedef struct s_proc
 	char			**args;
 	char			*infile;
 	int				infd;
+	char			*delimiter;
 	char			*outfile;
 	int				outfd;
 	bool			append;
@@ -198,6 +199,7 @@ void	ft_search_export_unset(t_env **exp, char *name);
 void	ft_builtin_export(t_proc *p, char ***env, t_env **exp, t_pipex *px);
 void	ft_only_cd(t_env *exp, char **env, t_pipex *px, char *pwd);
 void	ft_builtin_cd(t_proc *p, char ***env, t_env **exp, t_pipex *px);
+void	ft_exit_with_num(t_pipex *px, t_proc*p);
 void	ft_builtin_exit(t_proc *p, t_pipex *px);
 
 // EXPORT UTILS
@@ -229,6 +231,7 @@ int		ft_check_arg_number(char **args, int expect);
 void	ft_print_matrix(char **matrix);
 void	ft_print_export_lst(t_env **exp_lst);
 void	ft_print_pipex(t_pipex *pipex);
+void    ft_handle_c(int sig);
 
 // SEARCH FUNCTIONS
 char	*ft_get_exp_content(t_env *exp, char *name);

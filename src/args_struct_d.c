@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 17:30:02 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/20 17:32:57 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/27 12:14:35 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	ft_double_qt(char *s, int *i, t_arg *node, t_info *info)
 static bool	ft_is_char(char c)
 {
 	if (c == '$' || c == ' ' || c == '\''
-		|| c == '|' || c == '<' || c == '>')
+		|| c == '|' || c == '<' || c == '>'  || c == '=')
 		return (true);
 	else
 		return (false);

@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 12:28:18 by aehrl             #+#    #+#             */
-/*   Updated: 2025/05/22 11:36:44 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/27 17:24:27 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,10 @@ void	ft_builtin_check(t_proc *proc)
 {	
 	int len;
 
-	len = ft_strlen(proc->args[0]);
+	if (proc->args)
+		len = ft_strlen(proc->args[0]);
+	else
+		len = 0;
 	if (len == 2 && !ft_strncmp(proc->args[0], "cd", len))
 		proc->is_builtin = true;
 	else if (len == 3 && (!ft_strncmp(proc->args[0], "env", len)
@@ -70,9 +73,14 @@ void	ft_builtin_echo(t_proc *p)
 	}
 	while (p->args[i])
 	{
-		printf("%s",p->args[i]);
-		if (p->args[i + 1])
-			printf(" ");
+		if (p->outfile)
+			ft_putendl_fd(p->args[i], p->outfd);
+		else
+		{
+			printf("%s",p->args[i]);
+			if (p->args[i + 1])
+				printf(" ");
+		}
 		i++;
 	}
 	if (p->has_flags == false)

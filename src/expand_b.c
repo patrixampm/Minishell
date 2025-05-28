@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 17:55:34 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/21 17:56:31 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/27 17:01:29 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*ft_check_expand3(t_env *exp, char *input)
 	int		i;
 
 	i = 0;
-	if (input[0] == '$')
+	if (input && input[0] == '$')
 	{
 		a = exp;
 		while (a)

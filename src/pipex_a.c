@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 15:08:47 by aehrl             #+#    #+#             */
-/*   Updated: 2025/05/26 13:11:00 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/27 17:53:59 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,12 @@ void	ft_handle_in(t_pipex *pipex, t_proc *proc, t_env *exp)
 	{ 
 		if (proc->infd != STDIN_FILENO)
 			pipex->in = proc->infd;
+		if (pipex->in == -1)
+		{
+			printf("%s: No such file or directory\n", proc->infile);
+			pipex->status = 1;
+			exit(1);
+		}
 		if (dup2(pipex->in, STDIN_FILENO) < 0)
 			ft_print_dup2err(pipex);
 		close(pipex->in);
@@ -91,21 +97,24 @@ void	ft_solo_process(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 		ft_handle_in(px, p, *exp);
 		if (px->out != STDOUT_FILENO)
 		{
-			ft_putstr_fd("\nenter\n", 2);
+			// ft_putstr_fd("\nenter\n", 2);
 			if (dup2(px->out, STDOUT_FILENO) < 0)
 				ft_print_dup2err(px);
 			close(px->out);
 		}
-		px->clean_path = ft_get_path(px->all_paths, px->cmd_args[0]);
-		if (execve(px->clean_path, px->cmd_args, *env) < 0)
-			ft_print_execve_err(px, p->args[0]);
+		if (px->cmd_args)
+		{
+			px->clean_path = ft_get_path(px->all_paths, px->cmd_args[0]);
+			if (execve(px->clean_path, px->cmd_args, *env) < 0)
+				ft_print_execve_err(px, p->args[0]);
+		}
 	}
 	waitpid(px->pids, &px->status, 0);
 	if (WIFEXITED(px->status) && px->status != 0)
 		px->status = WEXITSTATUS(px->status);
 	else
 		px->status = 0;
-}
+} // heredoc never closes here
 
 void	ft_first_process(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 {
@@ -119,9 +128,12 @@ void	ft_first_process(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 		ft_builtin_execute(p, &px->all_paths, exp, px);
 		return ;
 	}
-	px->clean_path = ft_get_path(px->all_paths, px->cmd_args[0]);
-	if (execve(px->clean_path, px->cmd_args, *env) < 0)
-		ft_print_execve_err(px, p->args[0]);
+	if (px->cmd_args)
+	{
+		px->clean_path = ft_get_path(px->all_paths, px->cmd_args[0]);
+		if (execve(px->clean_path, px->cmd_args, *env) < 0)
+			ft_print_execve_err(px, p->args[0]);
+	}
 }
 
 void	ft_child_process(t_pipex *px , t_proc *p, char ***env, t_env **exp)
@@ -138,9 +150,12 @@ void	ft_child_process(t_pipex *px , t_proc *p, char ***env, t_env **exp)
 		ft_builtin_execute(p, env, exp, px);
 		return ;
 	}
-	px->clean_path = ft_get_path(px->all_paths, px->cmd_args[0]);
-	if (execve(px->clean_path, px->cmd_args, *env) < 0)
-		ft_print_execve_err(px, p->args[0]);
+	if (px->cmd_args)
+	{
+		px->clean_path = ft_get_path(px->all_paths, px->cmd_args[0]);
+		if (execve(px->clean_path, px->cmd_args, *env) < 0)
+			ft_print_execve_err(px, p->args[0]);
+	}
 }
 
 void	ft_last_process(t_pipex *px, t_proc *p, char ***env, t_env **exp)
@@ -157,18 +172,21 @@ void	ft_last_process(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 		ft_builtin_execute(p, &px->all_paths, exp, px);
 		return ;
 	}
-	px->clean_path = ft_get_path(px->all_paths, px->cmd_args[0]);
-	if (execve(px->clean_path, px->cmd_args, *env) < 0)
-		ft_print_execve_err(px, p->args[0]);
+	if (px->cmd_args)
+	{
+		px->clean_path = ft_get_path(px->all_paths, px->cmd_args[0]);
+		if (execve(px->clean_path, px->cmd_args, *env) < 0)
+			ft_print_execve_err(px, p->args[0]);
+	}
 }
 
 int	ft_pipes(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 {
 	if (pipe(px->pipes) < 0)
-		return (ft_printerr("Error\n creating pipe", NULL, 1, px), -1);
+		return (ft_printerr("Error creating pipe", NULL, 1, px), -1);
 	px->pids = fork();
 	if (px->pids < 0)
-		return (ft_printerr("Error\n forking process", NULL, 1, px), -1);
+		return (ft_printerr("Error forking process", NULL, 1, px), -1);
 	if (px->pids == 0)
 	{
 		if (px->iter == 0)

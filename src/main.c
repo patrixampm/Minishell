@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:55 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/26 13:12:17 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/27 18:21:07 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,26 +103,10 @@ bool	ft_minishell(char *str, t_info *info)
 void    ft_handle_c(int sig)
 {
     (void)sig;
-    if (g_signal_flag == 0)
-    {
-        printf("\n");
-        rl_on_new_line();
-        rl_replace_line("", 0);
-        rl_redisplay();
-    }
-    else if (g_signal_flag == 1)
-    {
-        printf("\n");
-        rl_replace_line("", 0);
-    }
-    else if (g_signal_flag == 2)
-    {
-        printf("\n");
-        exit(130);
-    }
-    else if (g_signal_flag == 3)
-        printf("");
-    g_signal_flag = 0;
+    printf("\n");
+    rl_on_new_line();
+    rl_replace_line("", 0);
+    rl_redisplay();
 }
 
 void    ft_init_info(t_info *info, char **env)

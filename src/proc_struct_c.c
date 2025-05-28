@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 17:13:28 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/22 13:29:42 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/27 17:33:16 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ void	ft_prev_type_3to5(t_arg *aux, t_proc *process)
 	}
 	else if (aux->prev->type == 4)
 	{
-		if (process->infile)
-			free(process->infile);
-		process->infile = ft_strdup(aux->str);
+		if (process->delimiter)
+			free(process->delimiter);
+		process->delimiter = ft_strdup(aux->str);
 		process->hd = true;
 	}
 	else if (aux->prev->type == 5)
