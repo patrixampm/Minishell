@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:55 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/27 18:21:07 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/28 18:16:23 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void ft_excecute(t_proc *p, t_info *info)
 	while(pipex.iter < pipex.p_count && aux != NULL) // check status
 	{
 		ft_builtin_check(p);
-		ft_print_proc_lst(&p); //delete me later
+		//ft_print_proc_lst(&p); //delete me later
 		if (getenv("PATH") != NULL)
 			pipex.all_paths = ft_split(getenv("PATH"), ':');
 		pipex.out = p->outfd;

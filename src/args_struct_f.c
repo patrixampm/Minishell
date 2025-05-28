@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 18:00:16 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/20 17:22:51 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/28 18:27:56 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ int	ft_check_post(t_arg *node, t_info *info, int j)
 
 	i = 0;
 	x = 0;
-	printf("%s\n", node->post);
 	while (node->post[x] != '\0')
 		x++;
 	while (node->post[i] != '$' && i < x)
