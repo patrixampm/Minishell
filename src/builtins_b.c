@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 19:06:33 by aehrl             #+#    #+#             */
-/*   Updated: 2025/05/22 12:02:47 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/29 14:07:05 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,29 +15,26 @@
 void	ft_search_export_unset(t_env **exp, char *name)
 {
 	t_env	*aux;
-	t_env	*tmp;
-
+	t_env	*prev;
 
 	aux = *exp;
-	tmp = aux->next;
+	prev = NULL;
 	while (aux)
 	{
-		if (tmp != NULL && ft_strncmp(aux->next->name, name, ft_strlen(name)) == 0)
+		if (ft_strncmp(aux->content, name, ft_strlen(name) + 1) == 0)
 		{
-			if (tmp->next == NULL)
-				aux->next = NULL;
+			if (prev)
+				prev->next = aux->next;
 			else
-			{
-				tmp = aux->next;
-				aux->next = tmp->next;
-			}
-			free(tmp->name);
-			if (tmp->content)
-				free(tmp->content);
-			free(tmp);
-			break ;
+				*exp = aux->next;
+			free(aux->name);
+			if (aux->content)
+				free(aux->content);
+			free(aux);
+			return ;
 		}
-		aux = aux->next; 
+		prev = aux;
+		aux = aux->next;
 	}
 }
 
@@ -53,10 +50,13 @@ void	ft_search_export(t_env **exp, char	*name, char	*value)
 		return ;
 	while (aux)
 	{
-		if (ft_strncmp(aux->name, name, ft_strlen(name)) == 0 && value)
+		if (ft_strncmp(aux->name, name, ft_strlen(name)) == 0)
 		{
 			free(aux->content);
-			aux->content = ft_strdup(value);
+			if (value)
+				aux->content = ft_strdup(value);
+			else
+				aux->content = NULL;
 			return ;
 		}
 		if (ft_search_export_slipin(exp, name, value) == 1)
@@ -100,28 +100,25 @@ char	**ft_env_add_or_set(char **env, int	i, char	*name, char	*value)
 
 void	ft_export_add_or_set(t_env **exp, char *arg, char ***env)
 {
-	char	**command;
+	char	*name;
+	char	*content;
 	int		env_loc;
 	int		i;
-	char	*new_arg;
 
-	i = 1;
-	new_arg = ft_strdup(arg);
-	if (ft_strchr(new_arg, '='))
+	i = 0;
+	while (arg[i]!= '=' && arg[i] != '\0')
+		i++;
+	name = ft_substr(arg, 0, i);
+	if (ft_strchr(arg, '='))
 	{
-		command = ft_split(new_arg, '=');
-		while (command[i])
-			i++;
-		while (--i > 1)
-			command[i - 1] = ft_strjoin(command[i - 1], command[i]);
-		ft_search_export(exp, command[0], command[1]);
-		env_loc = ft_builtin_unset_checker(*env, command[0]);
-		*env = ft_env_add_or_set(*env, env_loc, command[0], command[1]);
-		ft_free_matrix(command);
+		content = ft_strchr(arg, '=');
+		ft_search_export(exp, name, (content + 1));
+		env_loc = ft_builtin_unset_checker(*env, (content + 1));
+		*env = ft_env_add_or_set(*env, env_loc, name, (content + 1));
 	}
 	else
-		ft_search_export(exp, new_arg, NULL);
-	free(new_arg);
+		ft_search_export(exp, arg, NULL);
+	free(name);
 }
 
 void	ft_builtin_export(t_proc *p, char ***env, t_env **exp, t_pipex *px)
@@ -140,17 +137,17 @@ void	ft_builtin_export(t_proc *p, char ***env, t_env **exp, t_pipex *px)
 	}
 	while (p->args[i])
 	{
-		if (p->args[i][0] == '-')
+		if (p->args[i][0] > 20 && p->args[i][0] < 58)
 		{
-			if (i == 1)
+			if (p->args[i][0] == '-')
 			{
 				px->status = 2;
-				printf("export: \'-%c\'\n: invalid option", p->args[i][1]);
+				printf("export: \'-%c\': invalid option\n", p->args[i][1]);
 			}
 			else
 			{
 				px->status = 1;
-				printf("export: \'%s\'\n: not a valid identifier", p->args[i]);
+				printf("export: \'%s\': not a valid identifier\n", p->args[i]);
 			}
 			return ;
 		}

@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 16:32:31 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/20 15:31:05 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/29 12:38:24 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,7 @@ int	ft_get_type(char *str, char c, int *i)
 	type = -1;
 	if (str[*i] == 0)
 		return (type);
-	if (ft_isalpha(c) == 1 || c == '$' || c == '-'
-		|| c == '.' || c == '/' || c == '\\' || ft_isdigit(c) == 1)
+	if (ft_isalpha(c) == 1 || (c > 32 && c < 58) || c == '\\')
 		return (type = 0);
 	if (c == '\'')
 		return (type = 1);

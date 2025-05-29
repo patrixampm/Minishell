@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 15:08:47 by aehrl             #+#    #+#             */
-/*   Updated: 2025/05/27 17:53:59 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/29 13:43:29 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,12 @@ void	ft_handle_in(t_pipex *pipex, t_proc *proc, t_env *exp)
 	if (proc->hd == true)
 	{
 		read_input_limiter(proc, exp);
-		if (proc->exit_status == 2)
-			return ;
+		if (proc->exit_status == 2 || !proc->args)
+			exit(2);
 		proc->infd = open("here_doc", O_RDWR , S_IRWXU);
 		if (dup2(proc->infd, STDIN_FILENO) < 0)
 			ft_print_dup2err(pipex);
+		close(proc->infd);
 	}
 	else if (pipex->in != STDIN_FILENO)
 	{ 
@@ -114,11 +115,13 @@ void	ft_solo_process(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 		px->status = WEXITSTATUS(px->status);
 	else
 		px->status = 0;
-} // heredoc never closes here
+}
 
 void	ft_first_process(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 {
  	ft_handle_in(px, p, *exp);
+	if (p->exit_status == 2)
+		return ;
 	dup2(px->pipes[1], STDOUT_FILENO); // should error handling be added here?
 	if (px->out != STDOUT_FILENO)
 		close(px->out);
@@ -139,6 +142,8 @@ void	ft_first_process(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 void	ft_child_process(t_pipex *px , t_proc *p, char ***env, t_env **exp)
 {
 	ft_handle_in(px, p, *exp);
+	if (p->exit_status == 2)
+		return ;
 	if (px->pipes[1]!= STDOUT_FILENO)
 	{
 		dup2(px->pipes[1], STDOUT_FILENO); // error handling?
@@ -161,6 +166,8 @@ void	ft_child_process(t_pipex *px , t_proc *p, char ***env, t_env **exp)
 void	ft_last_process(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 {
 	ft_handle_in(px, p, *exp);
+	if (p->exit_status == 2)
+		return ;
 	close(px->in);
 	if (px->out != STDOUT_FILENO)
 	{

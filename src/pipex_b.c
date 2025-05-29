@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 15:11:38 by aehrl             #+#    #+#             */
-/*   Updated: 2025/05/27 18:22:18 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/29 13:26:45 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,15 +62,12 @@ void	read_input_limiter(t_proc *p, t_env *exp)
 {
 	char	*input;
 
-	input = NULL;
 	p->infd = open("here_doc", O_RDWR | O_CREAT, S_IRWXU);
 	ft_putstr_fd("\nenter.... fd.... open", 2);
 	ft_putnbr_fd(p->infd, 2);
 	ft_putstr_fd("\n", 2);
 	while (1)
 	{
-		if (SIGINT)
-			break ;
 		write(1, "here_doc> ", 10);
 		input = get_next_line(0);
 		input = ft_check_expand3(exp, input);
