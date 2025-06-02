@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 19:06:33 by aehrl             #+#    #+#             */
-/*   Updated: 2025/05/29 14:07:05 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/06/02 17:36:43 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	ft_search_export_unset(t_env **exp, char *name)
 	prev = NULL;
 	while (aux)
 	{
-		if (ft_strncmp(aux->content, name, ft_strlen(name) + 1) == 0)
+		if (ft_strncmp(aux->name, name, ft_strlen(name) + 1) == 0)
 		{
 			if (prev)
 				prev->next = aux->next;
@@ -52,11 +52,11 @@ void	ft_search_export(t_env **exp, char	*name, char	*value)
 	{
 		if (ft_strncmp(aux->name, name, ft_strlen(name)) == 0)
 		{
-			free(aux->content);
 			if (value)
+			{
+				free(aux->content);
 				aux->content = ft_strdup(value);
-			else
-				aux->content = NULL;
+			}
 			return ;
 		}
 		if (ft_search_export_slipin(exp, name, value) == 1)
@@ -113,7 +113,7 @@ void	ft_export_add_or_set(t_env **exp, char *arg, char ***env)
 	{
 		content = ft_strchr(arg, '=');
 		ft_search_export(exp, name, (content + 1));
-		env_loc = ft_builtin_unset_checker(*env, (content + 1));
+		env_loc = ft_builtin_unset_checker(*env, name);
 		*env = ft_env_add_or_set(*env, env_loc, name, (content + 1));
 	}
 	else

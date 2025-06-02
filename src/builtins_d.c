@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 15:07:25 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/27 13:40:08 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/06/02 15:58:40 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ void	ft_only_cd(t_env *exp, char **env, t_pipex *px, char *pwd)
 {
 	char	*home;
 
-	home = getenv("HOME");
-	if (ft_builtin_unset_checker(env, "HOME") == -1)
+	home = ft_get_exp_content(exp, "HOME");
+	if (home == NULL)
 		ft_printerr("cd: HOME not set", NULL, 1, px);
 	else
 	{

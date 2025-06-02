@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 17:26:13 by aehrl             #+#    #+#             */
-/*   Updated: 2025/05/27 16:25:41 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/06/02 16:28:07 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ void	ft_free_matrix(char **matrix)
 	int	size;
 
 	i = 0;
+	if (!matrix)
+		return ;
 	size = ft_matrix_size(matrix);
 	if (matrix && matrix != NULL)
 	{

@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 12:28:18 by aehrl             #+#    #+#             */
-/*   Updated: 2025/05/29 13:51:40 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/06/02 17:53:57 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,8 @@ void	ft_builtin_echo(t_proc *p)
 		}
 		i++;
 	}
-	printf("\n");
+	if (p->args[1] && p->args[1][0] != '-' && p->args[1][1] != 'n' && !p->outfile)
+		printf("\n");
 }
 
 int	ft_builtin_unset_checker(char **env, char *unset)
@@ -105,24 +106,19 @@ int	ft_builtin_unset_checker(char **env, char *unset)
 	free(temp);
 	return (-1);
 }
-char	**ft_builtin_unset(t_proc *p , char **env, t_env **exp)
-{	
+
+char	**ft_builtin_unset_env(char **env, int loc)
+{
 	char	**temp;
 	int		i;
-	int		check;
 	int		j;
 
-	if (!p->args[1])
-		return (env);
-	check = ft_builtin_unset_checker(env, p->args[1]);
-	if (ft_check_arg_number(p->args, 2) == -1 || check == -1) //check this as we can do multiple unsets at once
-		return (ft_search_export_unset(exp, p->args[1]), env);
-	j = 0;
 	i = 0;
+	j = 0;
 	temp = ft_calloc(sizeof(char *), ft_matrix_size(env));
 	while (env[i])
 	{
-		if (i == check)
+		if (i == loc)
 			i++;
 		else if (env[i])
 		{
@@ -132,7 +128,28 @@ char	**ft_builtin_unset(t_proc *p , char **env, t_env **exp)
 		}
 	}
 	ft_free_matrix(env);
-	return (ft_search_export_unset(exp, p->args[1]), temp);
+	return (temp);
+}
+
+void	ft_builtin_unset(t_proc *p, char ***env, t_env **exp)
+{	
+	int		i;
+	int		check;
+
+	i = 1;
+	while (p->args[i])
+	{
+		check = ft_builtin_unset_checker(*env, p->args[i]);
+		printf("check = %d\n", check);
+		if (check == -1)
+			ft_search_export_unset(exp, p->args[i]);
+		else
+		{
+			*env = ft_builtin_unset_env(*env, check);
+			ft_search_export_unset(exp, p->args[i]);
+		}
+		i++;
+	}
 }
 
 void	ft_builtin_execute(t_proc *p, char ***env, t_env **exp, t_pipex *px)
@@ -149,7 +166,7 @@ void	ft_builtin_execute(t_proc *p, char ***env, t_env **exp, t_pipex *px)
 	else if (!ft_strncmp(p->args[0], "env", ft_strlen(p->args[0])))
 		ft_print_matrix(*env);
 	else if (!ft_strncmp(p->args[0], "unset", ft_strlen(p->args[0])))
-		*env = ft_builtin_unset(p, *env, exp);
+		ft_builtin_unset(p, env, exp);
 	else if (!ft_strncmp(p->args[0], "export", ft_strlen(p->args[0])))
 		ft_builtin_export(p, env, exp, px); 
 	else if (!ft_strncmp(p->args[0], "cd", ft_strlen(p->args[0])))
