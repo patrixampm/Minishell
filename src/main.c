@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:55 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/13 20:38:29 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/06/03 18:51:42 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int	g_signal_flag;
 static void	ft_free_ms(t_ms *ms)
 {
 	ft_free_arg_list(&ms->arg_lst);
-	ft_free_env_list(&ms->env_lst);
 	if (ms->proc_lst != NULL)
 		ft_free_proc_lst(&ms->proc_lst);
 	free(ms->str);
@@ -29,7 +28,6 @@ void	ft_wait(t_pipex *px)
 	int	i;
 
 	i = 0;
-	printf("pid: %d\n", px->pids[i]);
 	while (i < (px->p_count))
 	{
 		waitpid(px->pids[i], &px->status, 0);
@@ -41,7 +39,7 @@ void	ft_wait(t_pipex *px)
 	}
 }
 
-void ft_excecute(t_proc *p, t_info *info)
+ void ft_excecute(t_proc *p, t_info *info)
 {
 	t_pipex pipex;
 	t_proc	*aux;
@@ -49,18 +47,16 @@ void ft_excecute(t_proc *p, t_info *info)
 	aux = p;
 	pipex = ft_init_pipex(p, info);
 	pipex.in = p->infd;
+	ft_print_proc_lst(&p); //delete me later
 	while(pipex.iter < pipex.p_count && aux != NULL) // check status
 	{
 		ft_builtin_check(p);
-		ft_print_proc_lst(&p); //delete me later
 		if (getenv("PATH") != NULL)
 			pipex.all_paths = ft_split(getenv("PATH"), ':');
-		pipex.out = p->outfd;
 		if (pipex.p_count == 1)
 			ft_solo_process(&pipex, p, &info->env, &info->exp);
 		else
 			ft_pipes(&pipex, aux, &info->env, &info->exp);
-		info->prev_exit = pipex.status;
 		if (aux->next != NULL)
 		{
 			aux = aux->next;
@@ -70,13 +66,19 @@ void ft_excecute(t_proc *p, t_info *info)
 			ft_free_matrix(pipex.all_paths);
 		if (pipex.clean_path) 
 			free(pipex.clean_path);
-		if (pipex.status != 0)
-			ft_putendl_fd(strerror(pipex.status), 2); // check these error messages
 		pipex.iter++;
 	}
 	ft_wait(&pipex);
 	free(pipex.pids);
+	if (p->exit_status != 0)
+		info->prev_exit = p->exit_status;
+	if (pipex.status != 0)
+		info->prev_exit = pipex.status;
+	else
+		info->prev_exit = 0;
+	unlink("here_doc");
 }
+
 bool	ft_minishell(char *str, t_info *info)
 {
 	t_ms	*ms;
@@ -85,19 +87,13 @@ bool	ft_minishell(char *str, t_info *info)
 	ms->proc_lst = NULL;
 	if (ms == NULL)
 		return (false);
-	ms->env_lst = ft_get_env_lst(info->env);
-	if (ms->env_lst == NULL)
-		return (false);
 	ms->str = ft_strdup(str);
-	ms->arg_lst = ft_arg_lst(str, ms->env_lst);
+	ms->arg_lst = ft_arg_lst(str, info);
 	if (ms->arg_lst == NULL)
 		return (ft_free_ms(ms), false);
-	ms->proc_lst = ft_proc(ms);
+	ms->proc_lst = ft_proc(ms, info);
 	if (ms->proc_lst == NULL)
 		return (ft_free_ms(ms), false);
-	//ft_print_arg_lst(&ms->arg_lst);
-	//ft_print_proc_lst(&ms->proc_lst);
-	//ft_builtin_execute(ms->proc_lst, info);
 	ft_excecute(ms->proc_lst, info);
 	return (ft_free_ms(ms), true);
 }
@@ -105,33 +101,27 @@ bool	ft_minishell(char *str, t_info *info)
 void    ft_handle_c(int sig)
 {
     (void)sig;
-    if (g_signal_flag == 0)
-    {
-        printf("\n");
-        rl_on_new_line();
-        rl_replace_line("", 0);
-        rl_redisplay();
-    }
-    else if (g_signal_flag == 1)
-    {
-        printf("\n");
-        rl_replace_line("", 0);
-    }
-    else if (g_signal_flag == 2)
-    {
-        printf("\n");
-        exit(130);
-    }
-    else if (g_signal_flag == 3)
-        printf("");
-    g_signal_flag = 0;
+    printf("\n");
+    rl_on_new_line();
+    rl_replace_line("", 0);
+    rl_redisplay();
 }
 
 void    ft_init_info(t_info *info, char **env)
 {
+	t_env	*exp;
+	char	*lvl;
+
+	exp = NULL;
 	if (*env)
-        info->exp = ft_create_export_lst(env);
+        info->exp = ft_create_export_lst(env, exp);
     info->env = ft_create_env(env, &info->exp);
+	info->shlvl = atoi(ft_get_exp_content(info->exp, "SHLVL")) + 1;
+	lvl = ft_itoa(info->shlvl);
+	ft_search_export(&info->exp, "SHLVL", lvl);
+	ft_env_add_or_set(info->env, ft_builtin_unset_checker(info->env, "SHLVL"),
+	"SHLVL", lvl);
+	free(lvl);
     info->prev_exit = 0;
 }
 
@@ -159,12 +149,20 @@ int main(int ac, char **av, char **env)
             str = readline("Minishell:>");
             if (str == NULL)
 			{
+				write(2, "exit\n", 5);
 				break ;
-                // ft_exit(info); // manage this exit depending on the level of the shell
+			}
+			if (str[0] == '\0')
+			{
+			    free(str);
+			    continue;
 			}
             add_history(str);
-            if (!ft_strncmp(str, "EXIT", 5))
+            if (!ft_strncmp(str, "exit", ft_strlen(str)))
+			{
+				write(2, "exit\n", 5);
                 break ;
+			}
             ft_minishell(str, info);
             free(str);
         }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   proc_list.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 16:15:27 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/04/15 16:04:51 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/05/27 15:54:59 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ t_proc	*ft_new_proc(t_proc *proc_node)
 	proc_node->args = NULL;
 	proc_node->infile = NULL;
 	proc_node->infd = 0;
+	proc_node->delimiter = NULL;
 	proc_node->outfile = NULL;
 	proc_node->outfd = 1;
 	proc_node->append = false;
@@ -92,7 +93,7 @@ void	ft_free_proc_lst(t_proc **lst)
 	{
 		i = 0;
 		next = aux->next;
-		while (aux->args[i])
+		while (aux->args && aux->args[i])
 		{
 			free(aux->args[i]);
 			i++;
@@ -100,6 +101,7 @@ void	ft_free_proc_lst(t_proc **lst)
 		free(aux->args);
 		free(aux->infile);
 		free(aux->outfile);
+		free(aux->delimiter);
 		free(aux);
 		aux = next;
 	}

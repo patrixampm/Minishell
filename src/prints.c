@@ -6,11 +6,20 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 09:40:22 by aehrl             #+#    #+#             */
-/*   Updated: 2025/05/13 14:32:23 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/06/03 14:41:26 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	ft_printerr(char *str, char *arg, int errnum, t_pipex *px)
+{
+	if (arg)
+		printf("%s: %s\n", str, arg);
+	else
+		printf("%s\n", str);
+	px->status = errnum;
+}
 
 void	ft_print_matrix(char **matrix)
 {
@@ -73,4 +82,57 @@ void	ft_error_message(int error, char **path)
 	ft_putstr_fd(strerror(error), 2);
 	if (path)
 		ft_free_matrix(path);
+}
+
+void	ft_print_dup2err(t_pipex *px)
+{
+    if (errno == EBADF)
+    {
+        printf("dup2: Bad file descriptor\n");
+        px->status = 1;
+    }
+    else if (errno == EINTR)
+    {
+        printf("dup2: Interrupted by signal\n");
+        px->status = 4;
+    }
+    else if (errno == EMFILE)
+    {
+        printf("dup2: Too many open files\n");
+        px->status = 24;
+    }
+    else
+    {
+        printf("dup2\n");
+        px->status = 1;
+    }
+}
+
+void	ft_print_execve_err(t_pipex *px, char *arg)
+{
+    if (errno == EACCES)
+    {
+		strerror(126);	
+        printf("%s: Permission denied\n", arg);
+        px->status = 126;
+    }
+    else if (errno == ENOEXEC)
+    {
+		strerror(126);	
+        printf("%s: Exec format error\n", arg);
+        px->status = 126;
+    }
+    else if (errno == EISDIR)
+    {
+		strerror(126);
+        printf("%s: is a directory\n", arg);
+        px->status = 126;
+    }
+    else
+	{
+		strerror(127);
+		printf("%s: command not found\n", arg);
+        px->status = 127;
+	}
+	//exit(px->status);
 }

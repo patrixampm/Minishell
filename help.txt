@@ -18,7 +18,7 @@ ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo "$USER"
 ppeckham
 ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo "$USER$USER"
 ppeckhamppeckham
-ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo "$USERa$USER"
+ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo "$USERa$USER" **
 ppeckham
 ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo "$USER'a'$USER"
 ppeckham'a'ppeckham
@@ -30,16 +30,18 @@ aunqueexpand
 ppeckham@c3r5s4:~/Desktop/minishell_playground$ echo $expand aun"que"juju$no'expand'
 aunquejujuexpand
 
+echo a"b"c$no'd'  n
+
 echo \t joke
 t joke
 echo \n joke
 n joke
 
 "abc '$USER' cba"
-Make'file'|"" $US'ER'""""
+Make'file'|"" $US'ER'"""" **
 "$USER"' ' ho"la"'que'' ''as"e"'
 
-$PA$PATH
+$PA$PATH **
 a"$PAT"
 a$PATH"$a"
 $PATH$
@@ -48,6 +50,17 @@ $PATH$
 hi >> phillippa $USER | "how are you"
 'abc '$USER' cba' because ' cba' is lost
 
+shit new problems ahhhhhrggg:
+Minishell:>echo "$USER $$USER"
+$$
+Minishell:>echo "$$USER   hola"
+$$
+Minishell:>echo "$USER $USER"
+ppeckhamppeckham
+Minishell:>echo "$USER                       $USER"
+$USER                       ppeckham  este encima me genera un leak en el post
+
+echo "$USER hola  $USER"
 
 /*
 JOBS:
@@ -148,3 +161,20 @@ t_proc	*ft_create_proc(t_proc **proc_lst, t_ms *ms)
 	}
 	return (*proc_lst);
 }
+
+after adding a bunch of exports
+
+Direct leak of 5 byte(s) in 1 object(s) allocated from:
+    #0 0x49a26d in malloc (/home/ppeckham/Desktop/minishell_playground/minishell+0x49a26d)
+    #1 0x4e3926 in get_word (/home/ppeckham/Desktop/minishell_playground/minishell+0x4e3926)
+    #2 0x4e3a60 in ft_split (/home/ppeckham/Desktop/minishell_playground/minishell+0x4e3a60)
+    #3 0x4dced0 in ft_export_add_or_set /home/ppeckham/Desktop/minishell_playground/src/builtins_b.c:112:13
+    #4 0x4dd782 in ft_builtin_export /home/ppeckham/Desktop/minishell_playground/src/builtins_b.c:157:3
+    #5 0x4dc4ae in ft_builtin_execute /home/ppeckham/Desktop/minishell_playground/src/builtins_a.c:151:3
+    #6 0x4df187 in ft_solo_process /home/ppeckham/Desktop/minishell_playground/src/pipex_a.c:90:3
+    #7 0x4cb7fc in ft_excecute /home/ppeckham/Desktop/minishell_playground/src/main.c:57:4
+    #8 0x4cbf5e in ft_minishell /home/ppeckham/Desktop/minishell_playground/src/main.c:99:2
+    #9 0x4cc4a7 in main /home/ppeckham/Desktop/minishell_playground/src/main.c:163:13
+    #10 0x76d1c3029d8f in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:58:16
+
+SUMMARY: AddressSanitizer: 5 byte(s) leaked in 1 allocation(s).

@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 17:26:13 by aehrl             #+#    #+#             */
-/*   Updated: 2025/05/13 20:40:59 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/06/03 17:20:39 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,9 @@ int	ft_matrix_size(char **matrix)
 	int	i;
 
 	i = 0;
-	while(matrix[i])
+	if (!matrix)
+		return (-1);
+	while(matrix && matrix[i])
 		i++;
 	return (i);
 }
@@ -58,6 +60,8 @@ void	ft_free_matrix(char **matrix)
 	int	size;
 
 	i = 0;
+	if (!matrix)
+		return ;
 	size = ft_matrix_size(matrix);
 	if (matrix && matrix != NULL)
 	{
@@ -112,9 +116,9 @@ t_pipex	ft_init_pipex(t_proc *p, t_info *info)
 	pipex.iter = 0;
 	pipex.p_count = ft_proc_lstsize(&p);
 	pipex.out = 1;
-	if (pipex.p_count > 0)
+	if (pipex.p_count >= 1)
 	{
-		pipex.pids = (pid_t *)malloc((pipex.cmd_count) * sizeof(pid_t));
+		pipex.pids = (pid_t *)malloc((pipex.p_count) * sizeof(pid_t));
 		if (!pipex.pids)
 			(perror("Malloc failed\n"), exit(EXIT_FAILURE));
 	}

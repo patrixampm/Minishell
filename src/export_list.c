@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_list.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 18:29:31 by aehrl             #+#    #+#             */
-/*   Updated: 2025/04/28 09:53:50 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/05/20 19:02:10 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,10 +76,9 @@ t_env	*ft_get_export_lst(char **env)
 		return (export_lst);
 }
 
-t_env	*ft_create_export_lst(char **env)
+t_env	*ft_create_export_lst(char **env, t_env *export_lst)
 {
 	t_env	*env_lst;
-	t_env	*export_lst;
 	t_env	*node;
 	t_env	*aux;
 	t_env	*exp_aux;

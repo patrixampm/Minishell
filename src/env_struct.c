@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_struct.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 12:25:42 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/04/28 11:00:40 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/05/19 18:10:25 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void	ft_print_env_lst(t_env **env_lst)
 		aux = aux->next;
 	}
 }
+
 // need to create and ft_create_export_list becuse content might be null;
 t_env	*ft_create_env_lst(t_env **lst, char **env)
 {
@@ -70,7 +71,7 @@ char	**ft_set_global_env_exp(t_env **export)
 	char	*aux;
 	char	*temp;
 	t_env	*node;
-	
+
 	temp = "PATH=/usr/local/sbin:/usr/local/bin:";
 	path = (char **)ft_calloc(sizeof(char *), 5);
 	if (!path)
@@ -81,7 +82,7 @@ char	**ft_set_global_env_exp(t_env **export)
 	path[2] = ft_strdup("SHLVL=1");
 	path[3] = ft_strdup("_=/usr/bin/env");
 	*export = ft_new_env(ft_strdup("OLDPWD"), NULL);
-	node = ft_new_env(ft_strdup("PWD"), ft_strdup(aux)); 
+	node = ft_new_env(ft_strdup("PWD"), ft_strdup(aux));
 	ft_add_env_back(export, node);
 	node = ft_new_env(ft_strdup("SHLVL"), ft_strdup("1"));
 	ft_add_env_back(export, node);
@@ -103,7 +104,7 @@ char	**ft_create_env(char **env, t_env **export)
 	temp = ft_calloc(ft_matrix_size(env) + 1, sizeof(char *));
 	if (!temp)
 		return (NULL);
-	while(env[i])
+	while (env[i])
 	{
 		if (!ft_strncmp(env[i], "_=", 2))
 			temp[i] = ft_strdup("_=/usr/bin/env"); //might not need this

@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 12:28:18 by aehrl             #+#    #+#             */
-/*   Updated: 2025/05/13 20:36:56 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/06/02 19:46:13 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,11 @@
 void	ft_builtin_check(t_proc *proc)
 {	
 	int len;
-	len = ft_strlen(proc->args[0]);
+
+	if (proc->args)
+		len = ft_strlen(proc->args[0]);
+	else
+		len = 0;
 	if (len == 2 && !ft_strncmp(proc->args[0], "cd", len))
 		proc->is_builtin = true;
 	else if (len == 3 && (!ft_strncmp(proc->args[0], "env", len)
@@ -31,7 +35,7 @@ void	ft_builtin_check(t_proc *proc)
 }
 
 
-void	ft_buitlin_pwd(t_proc *p)
+void	ft_buitlin_pwd(t_proc *p, t_pipex *px)
 {
 	char	*aux;
 	
@@ -41,6 +45,7 @@ void	ft_buitlin_pwd(t_proc *p)
 		if (p->args[1][0] == '-' && p->args[1][1] != '\0')
 		{
 			printf("pwd: -%c: invalid option\n", p->args[1][1]); //check if this is correct
+			px->status = 2;
 			return ;
 		}
 	}
@@ -62,18 +67,23 @@ void	ft_builtin_echo(t_proc *p)
 			j++;
 		if ((i == 1 && j < ft_strlen(p->args[i])) || p->args[1][0] != '-')
 			p->has_flags = false;
-		if (j != ft_strlen(p->args[i])|| p->args[1][0] != '-')
-			break ;
+		if (j != ft_strlen(p->args[i]) || p->args[1][0] != '-')
+			break ; // px->status for error? or not?
 		i++;
 	}
 	while (p->args[i])
 	{
-		printf("%s",p->args[i]);
-		if (p->args[i + 1])
-			printf(" ");
+		if (p->outfile)
+			ft_putendl_fd(p->args[i], p->outfd);
+		else
+		{
+			printf("%s",p->args[i]);
+			if (p->args[i + 1])
+				printf(" ");
+		}
 		i++;
 	}
-	if (p->has_flags == false)
+	if (p->args[1] && p->args[1][0] != '-' && p->args[1][1] != 'n' && !p->outfile)
 		printf("\n");
 }
 
@@ -121,7 +131,7 @@ char	**ft_builtin_unset_env(char **env, int loc)
 	return (temp);
 }
 
-void	ft_builtin_unset(t_proc *p ,char ***env, t_env **exp)
+void	ft_builtin_unset(t_proc *p, char ***env, t_env **exp)
 {	
 	int		i;
 	int		check;
@@ -130,7 +140,6 @@ void	ft_builtin_unset(t_proc *p ,char ***env, t_env **exp)
 	while (p->args[i])
 	{
 		check = ft_builtin_unset_checker(*env, p->args[i]);
-		printf("check = %d\n", check);
 		if (check == -1)
 			ft_search_export_unset(exp, p->args[i]);
 		else
@@ -142,24 +151,25 @@ void	ft_builtin_unset(t_proc *p ,char ***env, t_env **exp)
 	}
 }
 
-void	ft_builtin_execute(t_proc *p, char ***env, t_env **exp, t_pipex *pipex)
+void	ft_builtin_execute(t_proc *p, char ***env, t_env **exp, t_pipex *px)
 {	
 	int	arg_len;
 
 	arg_len = ft_strlen(p->args[0]);
 	if (!ft_strncmp(p->args[0], "pwd", ft_strlen(p->args[0])))
-		ft_buitlin_pwd(p);
+		ft_buitlin_pwd(p, px);
 	else if (!ft_strncmp(p->args[0], "echo", ft_strlen(p->args[0])))
 		ft_builtin_echo(p);
+	else if (!ft_strncmp(p->args[0], "env", ft_strlen(p->args[0])) && p->args[1])
+		printf("env: %s: No such file or directory\n", p->args[1]);
 	else if (!ft_strncmp(p->args[0], "env", ft_strlen(p->args[0])))
 		ft_print_matrix(*env);
 	else if (!ft_strncmp(p->args[0], "unset", ft_strlen(p->args[0])))
 		ft_builtin_unset(p, env, exp);
 	else if (!ft_strncmp(p->args[0], "export", ft_strlen(p->args[0])))
-		ft_builtin_export(p, env, exp); 
-	(void)pipex;
-	/*else if (!ft_strncmp(p->args[0], "cd", ft_strlen(p->args[0])))
-		ft_builtin_cd(t_proc *p);
-	else if (!ft_strncmp(proc->args[0], "exit", ft_strlen(proc->args[0])))
-		ft_builtin_exit(t_proc *proc); */
+		ft_builtin_export(p, env, exp, px); 
+	else if (!ft_strncmp(p->args[0], "cd", ft_strlen(p->args[0])))
+		ft_builtin_cd(p, env, exp, px);
+	else if (!ft_strncmp(p->args[0], "exit", ft_strlen(p->args[0])))
+		ft_builtin_exit(p, px);
 }

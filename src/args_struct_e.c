@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 13:40:58 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/03/12 11:20:50 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/05/29 12:09:02 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 void	ft_iter_n_check(char *s, int j, int *k, t_arg *node)
 {
 	while (s[*k] && s[*k] != '$' && s[*k] != '\''
-		&& s[*k] != '"' && s[*k] != ' ')
+		&& s[*k] != '"' && s[*k] != ' ' && s[*k] != '=')
 		*k = *k + 1;
-	if (s[j] == '$' && (s[j + 1] == '\''
+	if (s[j] == '$' && (s[j + 1] == '\'' || s[j + 1] == '$'
 			|| s[j + 1] == '"' || s[j + 1] == '\0' || s[j + 1] == '?'))
 	{
 		if (s[j + 1] == '?')
@@ -25,6 +25,8 @@ void	ft_iter_n_check(char *s, int j, int *k, t_arg *node)
 			node->expand_exit = true;
 			node->exp = ft_strdup("$?");
 		}
+		else if (s[j + 1] == '$')
+			node->exp = ft_strdup("$$");
 		else
 			node->exp = ft_strdup("$");
 	}

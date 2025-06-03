@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   args_struct_b.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 16:32:31 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/05/13 20:16:12 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/05/29 12:38:24 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,7 @@ int	ft_get_type(char *str, char c, int *i)
 	type = -1;
 	if (str[*i] == 0)
 		return (type);
-	if (ft_isalpha(c) == 1 || c == '$' || c == '-'
-		|| c == '.' || c == '/' || c == '\\' || ft_isdigit(c) == 1)
+	if (ft_isalpha(c) == 1 || (c > 32 && c < 58) || c == '\\')
 		return (type = 0);
 	if (c == '\'')
 		return (type = 1);
@@ -49,7 +48,7 @@ bool	ft_set_simple_str(t_arg *arg_node, char *str, int *i, int len)
 	return (true);
 }
 
-bool	ft_set_alt_str(char *s, int *i, t_arg *arg_node, t_env *env_lst)
+bool	ft_set_alt_str(char *s, int *i, t_arg *arg_node, t_info *info)
 {
 	bool	is_end;
 
@@ -61,10 +60,10 @@ bool	ft_set_alt_str(char *s, int *i, t_arg *arg_node, t_env *env_lst)
 		{
 			if (!ft_check_closure(s, i, arg_node))
 				return (false);
-			ft_qt(s, i, arg_node, env_lst);
+			ft_qt(s, i, arg_node, info);
 		}
 		else
-			ft_no_qt(s, i, arg_node, env_lst);
+			ft_no_qt(s, i, arg_node, info);
 		ft_form_str(arg_node);
 		if (*i >= (ft_strlen(s)))
 			return (true);
@@ -78,11 +77,11 @@ bool	ft_set_alt_str(char *s, int *i, t_arg *arg_node, t_env *env_lst)
 	return (true);
 }
 
-bool	ft_set_arg_str(t_arg *arg_node, char *str, int *i, t_env *env_lst)
+bool	ft_set_arg_str(t_arg *arg_node, char *str, int *i, t_info *info)
 {
 	if (arg_node->type < 3)
 	{
-		if (!ft_set_alt_str(str, i, arg_node, env_lst))
+		if (!ft_set_alt_str(str, i, arg_node, info))
 			return (false);
 	}
 	else if (arg_node->type == 3 || arg_node->type == 5 || arg_node->type == 7)
