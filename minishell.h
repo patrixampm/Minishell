@@ -6,7 +6,7 @@
 /*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/06/02 16:54:12 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/06/03 16:43:44 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ typedef struct s_pipex
 	int		pipes[2];
 	int		in;
 	int		out;
-	//pid_t	*pids;
+	// pid_t	**pids;
 	pid_t	pids;
 	bool	here_doc;
 	t_env	**exp;
