@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_a.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 15:08:47 by aehrl             #+#    #+#             */
-/*   Updated: 2025/06/04 16:36:31 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/06/04 17:26:25 by ppeckham         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,9 @@ void    ft_handle_out(t_pipex *pipex, t_proc *proc)
 {
     if (proc->outfd != STDOUT_FILENO)
     {
-    	close(pipex->pipes[WRITE]);
 		if (dup2(proc->outfd, STDOUT_FILENO) < 0)
-            ft_print_dup2err(pipex);
+			ft_print_dup2err(pipex);
+    	close(pipex->pipes[WRITE]);
 	}
 	else
 	{
@@ -95,7 +95,10 @@ void	ft_solo_process(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 		}
 	}
 	if (px->all_paths != NULL)
+	{
 		ft_free_matrix(px->all_paths);
+		//px->all_paths = NULL;
+	}
 	unlink("here_doc");
 }
 
@@ -194,8 +197,8 @@ int	ft_pipes(t_pipex *px, t_proc *p, char ***env, t_env **exp)
 		else
 			ft_child_process(px, p, env, exp);
 	}
-	if (p->is_builtin == true) // dont think i need this
-		close(p->infd);
+	// if (p->is_builtin == true) // dont think i need this
+	// 	close(p->infd);
 	if (px->iter != px->p_count - 1)
 		px->in = ft_set_infd(px->pipes[0], px->pipes[1]);
 	if (ft_strncmp(p->args[0], "head", 4))
