@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 17:26:13 by aehrl             #+#    #+#             */
-/*   Updated: 2025/06/03 17:20:39 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/06/04 11:36:57 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	ft_matrix_size(char **matrix)
 
 	i = 0;
 	if (!matrix)
-		return (-1);
+		return (-1); // redundant 
 	while(matrix && matrix[i])
 		i++;
 	return (i);
@@ -75,36 +75,6 @@ void	ft_free_matrix(char **matrix)
 	}
 }
 
-/* t_pipex	ft_init_pipex(t_proc *p, t_env	**exp)
-{
-	t_pipex	pipex;
-	t_proc	*aux;
-	int		i;
-
-	aux = p;
-	i = 0;
-	pipex.iter = 0;
-	pipex.p_count = ft_proc_lstsize(&p);
-	while (i++ < pipex.p_count - 1)
-	{
-		pipex.pipes[pipex.p_count] = (int *)malloc(2 * sizeof(int));
-		if (!pipex.pipes[pipex.p_count]
-			|| pipe(pipex.pipes[pipex.p_count]) == -1)
-			(perror("Pipe error: pipe[i]\n"),
-				exit(EXIT_FAILURE));
-				//ft_free_pipex(pipex), exit(EXIT_FAILURE));
-	}
-	pipex.pids = (pid_t *)malloc((pipex.cmd_count) * sizeof(pid_t));
-	if (!pipex.pids)
-		(perror("Malloc failed\n"), exit(EXIT_FAILURE));
-		//(perror("Malloc failed\n"), ft_free_pipex(pipex), exit(EXIT_FAILURE));
-	pipex.all_paths = NULL;
-	pipex.exp = exp;
-	pipex.cmd_args = p->args;
-	pipex.clean_path = NULL;
-	pipex.status = 0;
-	return (pipex);
-} */
 t_pipex	ft_init_pipex(t_proc *p, t_info *info)
 {
 	t_pipex	pipex;
@@ -115,7 +85,6 @@ t_pipex	ft_init_pipex(t_proc *p, t_info *info)
 	i = 0;
 	pipex.iter = 0;
 	pipex.p_count = ft_proc_lstsize(&p);
-	pipex.out = 1;
 	if (pipex.p_count >= 1)
 	{
 		pipex.pids = (pid_t *)malloc((pipex.p_count) * sizeof(pid_t));

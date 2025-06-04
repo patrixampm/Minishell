@@ -6,27 +6,11 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 15:11:38 by aehrl             #+#    #+#             */
-/*   Updated: 2025/06/03 18:38:08 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/06/04 15:59:40 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-void	ft_dup2(int input_fd, int output_fd)
-{
-	if (input_fd != STDIN_FILENO)
-	{
-		if (dup2(input_fd, STDIN_FILENO) == -1)
-			(close(output_fd), close(input_fd), exit(1));
-		close(input_fd);
-	}
-	if (output_fd != STDOUT_FILENO)
-	{
-		if (dup2(output_fd, STDOUT_FILENO) == -1)
-			(close(output_fd), exit(1));
-		close(output_fd);
-	}
-}
 
 int	ft_set_infd(int pipein, int pipeout)
 {
@@ -61,7 +45,8 @@ char	*ft_get_path(char **envp, char *cmnd)
 void ft_close_hd_ctrlc(int sig)
 {
 	(void)sig;
-	g_signal_flag = 130;
+//	g_signal_flag = 130;
+	exit(130);
 }
 
 void	read_input_limiter(t_proc *p, t_env *exp)
@@ -81,18 +66,14 @@ void	read_input_limiter(t_proc *p, t_env *exp)
 			ft_putstr_fd(input, p->infd);
 		else
 			break ;
-		signal(SIGINT, ft_close_hd_ctrlc);
-		if (g_signal_flag == 130)
-		{
-			close(p->infd);
-			p->exit_status = 130;
-			return ;
-		}
+	//	signal(SIGINT, ft_close_hd_ctrlc);
 		free(input);
 	}
 	if (!input)
 	{
-		ft_putstr_fd("warnign control D was used\n", 2);
+		ft_putstr_fd("warning: here-document at line 1 delimited by end-of-file (wanted `", 2);
+		ft_putstr_fd(p->delimiter, 2);
+		ft_putstr_fd("')\n", 2);
 		close(p->infd);
 		//px->pids[px->iter] = -1;
 	//	unlink("here_doc");
@@ -103,7 +84,7 @@ void	read_input_limiter(t_proc *p, t_env *exp)
 	close(p->infd);
 }
 
-void	del_heredoc(t_proc *p)
+void	del_heredoc(t_proc *p) // dont think we ever use this
 {
 	bool	check;
 	t_proc	*aux;

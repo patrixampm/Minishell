@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:55 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/06/03 18:51:42 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/06/04 15:58:44 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,56 @@ void	ft_wait(t_pipex *px)
 	}
 }
 
- void ft_excecute(t_proc *p, t_info *info)
+/* void ft_multi_process(t_pipex *pipex, t_proc *p, t_info *info)
+{
+	t_proc	*aux;
+
+	aux = p;
+	while(pipex->iter < pipex->p_count && aux != NULL) // check status
+	{
+		ft_builtin_check(aux);
+		if (getenv("PATH") != NULL)
+			pipex->all_paths = ft_split(getenv("PATH"), ':');
+		ft_pipes(pipex, aux, &info->env, &info->exp);
+		if (aux->next != NULL)
+		{
+			aux = aux->next;
+			pipex->cmd_args = aux->args;
+		}
+		if (pipex->all_paths != NULL)
+		{
+			ft_free_matrix(pipex->all_paths);
+			pipex->all_paths = NULL;
+		}
+		if (pipex->clean_path) 
+			free(pipex->clean_path);
+		pipex->iter++;
+	}
+	close(pipex->pipes[0]);
+	close(pipex->pipes[1]);
+}
+
+void ft_excecute(t_proc *p, t_info *info)
+{
+	t_pipex pipex;
+	
+	pipex = ft_init_pipex(p, info);
+	pipex.in = p->infd;
+	ft_builtin_check(p);
+	if (pipex.p_count == 1)
+		ft_solo_process(&pipex, p, &info->env, &info->exp);
+	else 
+		ft_multi_process(&pipex, p, info);
+	ft_wait(&pipex);
+	free(pipex.pids);
+	if (pipex.status != 0)
+		info->prev_exit = pipex.status;
+	else
+		info->prev_exit = 0;
+	unlink("here_doc");
+} */
+
+void ft_excecute(t_proc *p, t_info *info)
 {
 	t_pipex pipex;
 	t_proc	*aux;
@@ -47,16 +96,17 @@ void	ft_wait(t_pipex *px)
 	aux = p;
 	pipex = ft_init_pipex(p, info);
 	pipex.in = p->infd;
-	ft_print_proc_lst(&p); //delete me later
 	while(pipex.iter < pipex.p_count && aux != NULL) // check status
 	{
 		ft_builtin_check(p);
+		ft_print_proc_lst(&p); //delete me later
 		if (getenv("PATH") != NULL)
 			pipex.all_paths = ft_split(getenv("PATH"), ':');
 		if (pipex.p_count == 1)
 			ft_solo_process(&pipex, p, &info->env, &info->exp);
 		else
 			ft_pipes(&pipex, aux, &info->env, &info->exp);
+		info->prev_exit = pipex.status;
 		if (aux->next != NULL)
 		{
 			aux = aux->next;
@@ -66,17 +116,12 @@ void	ft_wait(t_pipex *px)
 			ft_free_matrix(pipex.all_paths);
 		if (pipex.clean_path) 
 			free(pipex.clean_path);
+		if (pipex.status != 0)
+			ft_putendl_fd(strerror(pipex.status), 2); // check these error messages
 		pipex.iter++;
 	}
 	ft_wait(&pipex);
 	free(pipex.pids);
-	if (p->exit_status != 0)
-		info->prev_exit = p->exit_status;
-	if (pipex.status != 0)
-		info->prev_exit = pipex.status;
-	else
-		info->prev_exit = 0;
-	unlink("here_doc");
 }
 
 bool	ft_minishell(char *str, t_info *info)

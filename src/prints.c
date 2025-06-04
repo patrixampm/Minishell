@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 09:40:22 by aehrl             #+#    #+#             */
-/*   Updated: 2025/06/03 14:41:26 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/06/04 11:37:59 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,6 @@ void	ft_print_pipex(t_pipex *pipex)
 	int	i;
 
 	i = 0;
-	ft_putstr_fd("\ncommand count:\n", 2);
-	ft_putnbr_fd(pipex->cmd_count, 2);
 	ft_putstr_fd("\nproccess count:\n", 2);
 	ft_putnbr_fd(pipex->p_count, 2);
 	ft_putstr_fd("\ncommands:\n", 2);
