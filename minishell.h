@@ -6,7 +6,7 @@
 /*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 13:32:50 by ppeckham          #+#    #+#             */
-/*   Updated: 2025/06/03 18:47:20 by aehrl            ###   ########.fr       */
+/*   Updated: 2025/06/04 12:20:16 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,19 +86,15 @@ typedef struct s_pipex
 {
 	int		iter;
 	int		p_count;
-	int		cmd_count;
-	//int		**pipes;
 	int		pipes[2];
-	int		in;
-	int		out;
+	int		in; // maybe redundant
 	pid_t	*pids;
-//	pid_t	pids;
-	bool	here_doc;
-	t_env	**exp;
+	bool	here_doc; // redundant
+	t_env	**exp; // redundant
 	char	**all_paths;
 	char	*clean_path;
 	char	**cmd_args;
-	int		status;
+	int		status; // redundant
 }	t_pipex;
 
 typedef struct s_info
@@ -196,7 +192,7 @@ void	ft_print_export_lst(t_env **exp_lst);
 int		ft_builtin_unset_checker(char **env, char *unset);
 void	ft_search_export_unset(t_env **exp, char *name);
 void	ft_builtin_export(t_proc *p, char ***env, t_env **exp, t_pipex *px);
-void	ft_only_cd(t_env *exp, char **env, t_pipex *px, char *pwd);
+void	ft_only_cd(t_env *exp, char ***env, t_pipex *px, char *pwd);
 void	ft_builtin_cd(t_proc *p, char ***env, t_env **exp, t_pipex *px);
 void	ft_exit_with_num(t_pipex *px, t_proc*p);
 void	ft_builtin_exit(t_proc *p, t_pipex *px);
