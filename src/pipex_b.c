@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_b.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ppeckham <ppeckham@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aehrl <aehrl@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 15:11:38 by aehrl             #+#    #+#             */
-/*   Updated: 2025/06/04 17:00:14 by ppeckham         ###   ########.fr       */
+/*   Updated: 2025/06/04 17:44:23 by aehrl            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ char	*ft_get_path(char **envp, char *cmnd)
 void ft_close_hd_ctrlc(int sig)
 {
 	(void)sig;
-//	g_signal_flag = 130;
 	exit(130);
 }
 
@@ -66,7 +65,7 @@ void	read_input_limiter(t_proc *p, t_env *exp)
 			ft_putstr_fd(input, p->infd);
 		else
 			break ;
-	//	signal(SIGINT, ft_close_hd_ctrlc);
+		signal(SIGINT, ft_close_hd_ctrlc);
 		free(input);
 	}
 	if (!input)
